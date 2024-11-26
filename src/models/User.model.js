@@ -12,6 +12,11 @@ const userSchema = new mongoose.Schema({
         trim: true, // Remove leading/trailing whitespace
         index: true, // Add an index for this field
       },
+      varifyby: {
+        type: String,
+        required: true,
+        default: 'email',
+      },
       email: {
         type: String,
         required: true,
@@ -26,19 +31,50 @@ const userSchema = new mongoose.Schema({
         index: true,
       },
       avatar: {
+        default: null,
         type: String, // URL to avatar image
       },
       coverImage: {
+        default: null,
         type: String, // URL to cover image
       },
-      watchHistory: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Video'  // Reference to your Video model (if you have one)
-      }],
       password: {
         type: String,
         required: true,
       },
+      phone: {
+        default: null,
+        type: String,
+        required: false
+      },
+      shippingAddress: {
+        default: null,
+        type: String, // Refers to the address schema
+        required: false
+      },
+      billingAddress: {
+        default: null,
+        type: String, // Refers to the address schema
+        required: false
+      },
+      // orders: [{
+      //   default: [],  // Default to an empty array
+      //   type: Schema.Types.ObjectId,
+      //   ref: 'Order' // Reference to the Order model (assumed you have an Order schema)
+      // }],
+      // cart: [{
+      //   productId: {
+      //     type: Schema.Types.ObjectId,
+      //     ref: 'Product', // Reference to a Product model
+      //     required: true
+      //   },
+      //   quantity: {
+      //     default: 0,
+      //     type: Number,
+      //     required: true,
+      //     min: 1
+      //   }
+      // }],
       refreshToken: {
         type: String,
       },
@@ -90,4 +126,6 @@ userSchema.methods.generateAccessToken= function(){  // Generate Access Token me
     )
 }
 
-export let User= mongoose.model("User", userSchema);
+let User= mongoose.model("User", userSchema);
+
+export default User; // Export User model
