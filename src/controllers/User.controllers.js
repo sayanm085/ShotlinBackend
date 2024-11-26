@@ -254,5 +254,47 @@ const logoutUser = asyncHandler(async (req, res) => {
 }); 
 
 
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  // get the refresh token from the cookie
+  const Token = req.cookies?.refreshToken;
+  // check if the refresh token is present
+  if (!Token) {
+    return res.status(401).json(ApiResponse(401, null, "You are not authorized", false));
+  }
 
-export {registerUser,loginUser,logoutUser};
+  // verify the refresh token and get the user id from it if it is valid  
+  let userId;
+
+  try {
+    userId = jwt.verify(Token, process.env.REFRESH_TOKEN_SECRET)._id;
+  } catch (error) {
+    return res.status(401).json(ApiResponse(401, null, "You are not authorized", false));
+  }
+
+  // find the user with the id from the refresh token
+
+  const user= await User.findById(userId);
+  // check if the user exists
+  if (!user) {
+    return res.status(404).json(ApiResponse(404, null, "User not found", false));
+  }
+
+  // generate a new access token for the user and send it in the response body and in a cookie  
+      // jwt token sent to the user
+      const refreshToken = user.generaterefreshToken();
+      const AccessToken = user.generateAccessToken();
+
+  setAuthCookies(res, AccessToken, refreshToken);
+
+  // save the refresh token in the database
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+
+  // send a success response
+  res.status(200).json(ApiResponse(200, { AccessToken }, "Access token refreshed", true));
+
+});
+
+
+
+export {registerUser,loginUser,logoutUser , refreshAccessToken};
