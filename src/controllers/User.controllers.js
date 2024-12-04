@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 // Utility function for setting cookies
 const setAuthCookies = (res, accessToken, refreshToken) => {
-  const options = { httpOnly: true, secure:true };
+  const options = { httpOnly: true, secure:true ,maxAge: 1000 * 60 * 60 * 24 * 7 }; // 7 days in milliseconds
   res
   .cookie("AccessToken", accessToken, options)
   .cookie("refreshToken", refreshToken, options)
@@ -177,7 +177,7 @@ if(varifyby === 'email'){
   };
     // send a success response
 
-    res.status(200).json(ApiResponse(200, userResponse, "User logged in successfully", true));
+    res.status(200).json(ApiResponse(200, refreshToken, "User logged in successfully", true));
 
 
 
