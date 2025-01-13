@@ -36,7 +36,7 @@ const uploadImage = async (localFilePath) => {
         // console.log(uploadedImage);
         // console.log('------------------- optimizedImage -------------------');
         // console.log(optimizedImage);
-
+ 
         return optimizedImage ; // Return the uploaded and optimized image URLs
 
     } catch (error) {

@@ -37,115 +37,210 @@ const updateHeroContent = asyncHandler(async (req, res, next) => {
   }
 });
 
-// BrandPartners Content update,add new data and delete controller
+// * BrandPartners Content update,add new data and delete controller
+
+// const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
+//   const brandImageFile = req.files?.image?.[0]?.path || null;
+//   const { text, id, type } = req.body;
+  
+//   let result;
+  
+//   switch (type) {
+//     case 'brandPevContentUpdate':
+//       result = {
+//         brandId: id,
+//         brandName: text,
+//         brandLogo: brandImageFile,
+//         typeof: type,
+//       };
+//       break;
+  
+//     case 'NewbrandContentAdd':
+//       result = {
+//         brandName: text,
+//         brandLogo: brandImageFile,
+//         typeof: type,
+//       };
+//       break;
+  
+//     case 'brandContentDelete':
+//       result = {
+//         brandId: id,
+//       };
+//       break;
+  
+//     default:
+//       result = null; // Handle invalid type
+//       console.error('Invalid type provided:', type);
+//       break;
+//   }
+
+//   // Retrieve the existing WebContent
+//   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
+
+//   if (!webContent) {
+//     return next(
+//       new ApiResponse(400, "WebContent not found", "WebContent not found")
+//     );
+//   }
+
+// // Update BrandPartners content fields
+// if (brandPevContentUpdate && Array.isArray(brandPevContentUpdate)) {
+//   brandPevContentUpdate.forEach ( async({ brandId, brandName }) => {
+
+//     const brandLogo = req.files?.brandLogo
+//     console.log(brandLogo);
+
+//     if (brandId) {
+//       const brandPartner = webContent.BrandPartners.id(brandId);
+
+//       // Update fields only if they exist
+//       if (brandPartner) {
+//         if (brandName) brandPartner.brandName = brandName;
+
+//         const uploadedImageUrl = await uploadImage(brandLogo);
+//         // console.log(uploadedImageUrl);
+//         if (uploadedImageUrl) brandPartner.brandLogo = uploadedImageUrl;
+//       }
+//     }
+//   });
+// }
+
+// // If brandName and brandLogo exist, add a new BrandPartners object
+// if (NewbrandContentAdd && Array.isArray(NewbrandContentAdd)) {
+//   NewbrandContentAdd.forEach(({ brandName, brandLogo }) => {
+//     // Add a new BrandPartners object only if both brandName and brandLogo exist
+//     if (brandName && brandLogo) {
+//       webContent.BrandPartners.push({ brandName, brandLogo });
+//     }
+//   });
+// }
+
+//   // If deleteobj exists, delete the BrandPartners object
+
+//   if (Array.isArray(brandContentDelete) && brandContentDelete.length > 0) {
+//     brandContentDelete.forEach((brandId) => {
+//       webContent.BrandPartners.pull({ _id: brandId });
+//     });
+//   }
+
+//   // Save the updated WebContent to the database
+//   await webContent.save();
+
+//   // Send success response
+//   res
+//     .status(200)
+//     .json(
+//       ApiResponse(
+//         200,
+//         webContent.BrandPartners,
+//         "BrandPartners content updated successfully",
+//         true
+//       )
+//     );
+
+// });
 
 const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
-  const { brandPevContentUpdate, NewbrandContentAdd, brandContentDelete } =
-    req.body;
+  const brandImageFile = req.files?.brandLogo?.[0]?.path || null;
+  const { text, id, type } = req.body;
 
+  let operationData;
+
+  switch (type) {
+    case 'brandPevContentUpdate':
+      operationData = {
+        updates: [{ brandId: id, brandName: text, brandLogo: brandImageFile }],
+      };
+      break;
+
+    case 'NewbrandContentAdd':
+      operationData = {
+        additions: [{ brandName: text, brandLogo: brandImageFile }],
+      };
+      break;
+
+    case 'brandContentDelete':
+      operationData = { deletions: [id] };
+      break;
+
+    default:
+      return next(
+        new ApiResponse(400, "Invalid operation type", "Invalid type provided")
+      );
+  }
   // Retrieve the existing WebContent
+
+
+
   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
 
   if (!webContent) {
-    return next(
-      new ApiResponse(400, "WebContent not found", "WebContent not found")
+    return next(new ApiResponse(404, "WebContent not found", "WebContent not found"));
+  }
+
+  // Handle updates
+  if (operationData?.updates) {
+    await Promise.all(
+      operationData.updates.map(async ({ brandId, brandName, brandLogo }) => {
+        const brandPartner = webContent.BrandPartners.id(brandId);
+
+        if (brandPartner) {
+          if (brandName) brandPartner.brandName = brandName;
+          if (brandLogo) { 
+            const uploadedImageUrl = await uploadImage(brandLogo);
+            if (uploadedImageUrl) brandPartner.brandLogo = uploadedImageUrl;
+          }
+        }
+      })
     );
   }
 
-// Update BrandPartners content fields
-if (brandPevContentUpdate && Array.isArray(brandPevContentUpdate)) {
-  brandPevContentUpdate.forEach(({ brandId, brandName, brandLogo }) => {
-    if (brandId) {
-      const brandPartner = webContent.BrandPartners.id(brandId);
 
-      // Update fields only if they exist
-      if (brandPartner) {
-        if (brandName) brandPartner.brandName = brandName;
-        if (brandLogo) brandPartner.brandLogo = brandLogo;
-      }
-    }
-  });
-}
+  // *Handle additions
+  if (operationData?.additions) {
+    const additionPromises = operationData.additions
+      .filter(({ brandName, brandLogo }) => brandName && brandLogo) // Filter invalid entries
+      .map(async ({ brandName, brandLogo }) => {
+        const uploadedImageUrl = await uploadImage(brandLogo);
+        console.log(uploadedImageUrl);
+        return { brandName, brandLogo: uploadedImageUrl };
+      });
+  
+    const newBrandPartners = await Promise.all(additionPromises);
+  
+    // Add all new BrandPartners to the array in a single operation
+    webContent.BrandPartners.push(...newBrandPartners);
+  }
 
-
-
-
-// If brandName and brandLogo exist, add a new BrandPartners object
-if (NewbrandContentAdd && Array.isArray(NewbrandContentAdd)) {
-  NewbrandContentAdd.forEach(({ brandName, brandLogo }) => {
-    // Add a new BrandPartners object only if both brandName and brandLogo exist
-    if (brandName && brandLogo) {
-      webContent.BrandPartners.push({ brandName, brandLogo });
-    }
-  });
-}
-
-
-
-  // If deleteobj exists, delete the BrandPartners object
-
-  if (Array.isArray(brandContentDelete) && brandContentDelete.length > 0) {
-    brandContentDelete.forEach((brandId) => {
+  // Handle deletions
+  if (operationData?.deletions) {
+    operationData.deletions.forEach((brandId) => {
       webContent.BrandPartners.pull({ _id: brandId });
     });
   }
 
-  // Save the updated WebContent to the database
+
+  // Save the updated WebContent
   await webContent.save();
 
-  // Send success response
-  res
-    .status(200)
-    .json(
-      ApiResponse(
-        200,
-        webContent.BrandPartners,
-        "BrandPartners content updated successfully",
-        true
-      )
-    );
-
-
-  //   // Retrieve the existing WebContent
-  //   const webContent = await WebContent.findById('674efd6a7d4788194ecd519a');
-  //   if (!webContent) {
-  //     return next(new ApiResponse(400, "WebContent not found", "WebContent not found"));
-  //   }
-
-  // // If brandName exists, update the BrandPartners object
-  // if (brandId) {
-  //    if(brandName){
-  //     webContent.BrandPartners.id(brandId).brandName = brandName;
-  //    }
-  //   // If brandLogo exists, upload and update the brandLogo field
-  //   if (brandLogo) {
-  //     webContent.BrandPartners.id(brandId).brandLogo = brandLogo;
-
-  //   }
-  // }
-
-  //   // If brandName and brandLogo exist, add a new BrandPartners object
-
-  //   if (brandName && brandLogo) {
-  //     webContent.BrandPartners.push({ brandName, brandLogo });
-  //   }
-
-  //   // If deleteobj exists, delete the BrandPartners object
-  //   if (deleteobj) {
-  //     webContent.BrandPartners.pull({ _id: deleteobj });
-  //   }
-
-  //   // Save the updated WebContent to the database
-  //   await webContent.save();
-
-  //   // Send success response
-  //   res.status(200).json(ApiResponse("success", webContent.BrandPartners, "BrandPartners content updated successfully"));
+  res.status(200).json(
+    ApiResponse(
+      200,
+      webContent.BrandPartners,
+      "BrandPartners content updated successfully",
+      true
+    )
+  );
 });
+
 
 // services Content update,add new data and delete controller
 
 const updateServicesContent = asyncHandler(async (req, res, next) => {
   const { servicesContentUpdate, NewServicesContentAdd, servicesContentDelete } = req.body;
+
+  console.log(servicesContentUpdate,"*******", NewServicesContentAdd,"*******", servicesContentDelete);
 
   // Retrieve the existing WebContent
   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
@@ -204,7 +299,37 @@ if (Array.isArray(servicesContentDelete) && servicesContentDelete.length > 0) {
 // WhyChooseUs Content update,add new data and delete controller
 
 const updateWhyChooseUsContent = asyncHandler(async (req, res, next) => {
-  const { whyChooseUsContentUpdate, NewWhyChooseUsContentAdd, WhyChooseUsContentDelete } = req.body;
+  const WhyChooseUsContentImageFile = req.files?.WhyChooseUsLogo?.[0]?.path || null;
+  const { title,reason, id, type } = req.body;
+
+  let operationData;
+
+  switch (type) {
+    case 'whyChooseUsContentUpdate':
+      operationData = {
+        updates: [{ whyChooseUsId: id, logo:WhyChooseUsContentImageFile, title, reason }],
+      };
+      break;
+
+    case 'NewWhyChooseUsContentAdd':
+      operationData = {
+        additions: [{ logo:WhyChooseUsContentImageFile, title, reason }],
+      };
+
+      break;
+
+    case 'WhyChooseUsContentDelete':
+      operationData = { deletions: [id] };
+      break;
+
+    default:
+      return next(
+        new ApiResponse(400, "Invalid operation type", "Invalid type provided")
+      );
+  }
+
+  // Retrieve the existing WebContent
+
 
   // Retrieve the existing WebContent
   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
@@ -216,46 +341,55 @@ const updateWhyChooseUsContent = asyncHandler(async (req, res, next) => {
   }
 
 // Update WhyChooseUs content fields 
-if (whyChooseUsContentUpdate && Array.isArray(whyChooseUsContentUpdate)) {
-  whyChooseUsContentUpdate.forEach(({ whyChooseUsId, logo, title, reason }) => {
-    if (whyChooseUsId) {
+if (operationData?.updates) {
+  await Promise.all(
+    operationData.updates.map(async ({ whyChooseUsId, title, reason, logo }) => {
       const whyChooseUs = webContent.WhyChooseUs.id(whyChooseUsId);
 
-      // Update fields only if they exist
       if (whyChooseUs) {
-        if (logo) whyChooseUs.logo = logo;
         if (title) whyChooseUs.title = title;
         if (reason) whyChooseUs.reason = reason;
+        if (logo) {
+          const uploadedImageUrl = await uploadImage(logo);
+          if (uploadedImageUrl) whyChooseUs.logo = uploadedImageUrl;
+        }
       }
-    }
-  });
-
+    })
+  );
 }
 
-// If logo, title, and reason exist, add a new WhyChooseUs object
-if (NewWhyChooseUsContentAdd && Array.isArray(NewWhyChooseUsContentAdd)) {
-  NewWhyChooseUsContentAdd.forEach(({ logo, title, reason }) => {
-    // Add a new WhyChooseUs object only if all fields exist
-    if (logo && title && reason) {
-      webContent.WhyChooseUs.push({ logo, title, reason });
-    }
-  });
+// Handle additions  
+
+if (operationData?.additions) {
+  const additionPromises = operationData.additions
+    .filter(({ title, reason, logo }) => title && reason && logo) // Filter invalid entries
+    .map(async ({ title, reason, logo }) => {
+      const uploadedImageUrl = await uploadImage(logo);
+      return { title, reason, logo: uploadedImageUrl };
+    });
+
+  const newWhyChooseUs = await Promise.all(additionPromises);
+
+  // Add all new WhyChooseUs to the array in a single operation
+  webContent.WhyChooseUs.push(...newWhyChooseUs);
 }
+
+
 
 // If deleteobj exists, delete the WhyChooseUs object
 
-if (Array.isArray(WhyChooseUsContentDelete) && WhyChooseUsContentDelete.length > 0) {
-  WhyChooseUsContentDelete.forEach((whyChooseUsId) => {
+if (operationData?.deletions) {
+  operationData.deletions.forEach((whyChooseUsId) => {
     webContent.WhyChooseUs.pull({ _id: whyChooseUsId });
   });
-}
 
+}
   // Save the updated WebContent to the database
 
   await webContent.save();
 
   // Send success response
-  res.status(200).json(ApiResponse(200,webContent.WhyChooseUs,"WhyChooseUs content updated successfully",true));
+  res.status(200).json(ApiResponse(200,"webContent.WhyChooseUs","WhyChooseUs content updated successfully",true));
 
 });
 
@@ -380,8 +514,6 @@ const WebContentget = asyncHandler(async(req, res) => {
 
   // let data1 =  data.BrandPartners.pull({ _id: '674efd6a7d4788194ecd519b' })
 
-
-
   //send the response to the user
   res.status(200).json({
     status: "success",
@@ -392,7 +524,65 @@ const WebContentget = asyncHandler(async(req, res) => {
 
 // Create and Save a new WebContent
 
+let uploadImages = async (req, res) => {
+  const brandImageFile = req.files?.image?.[0]?.path || null;
+  const { text, id, type } = req.body;
+  
+  let result;
+  
+  switch (type) {
+    case 'brandPevContentUpdate':
+      result = {
+        brandId: id,
+        brandName: text,
+        brandLogo: brandImageFile,
+        typeof: type,
+      };
+      break;
+  
+    case 'NewbrandContentAdd':
+      result = {
+        brandName: text,
+        brandLogo: brandImageFile,
+        typeof: type,
+      };
+      break;
+  
+    case 'brandContentDelete':
+      result = {
+        brandId: id,
+      };
+      break;
+  
+    default:
+      result = null; // Handle invalid type
+      console.error('Invalid type provided:', type);
+      break;
+  }
+  
+  console.log(result);
+  
 
 
 
-export {updateHeroContent,updateBrandPartnersContent,updateServicesContent,updateWhyChooseUsContent,updateFAQsContent,updateCallBookingContent,WebContentcreate,WebContentget};
+  res.status(200).json({ message: "Images uploaded successfully" });
+
+}
+
+
+
+
+
+
+
+export {
+  updateHeroContent,
+  updateBrandPartnersContent,
+  updateServicesContent,
+  updateWhyChooseUsContent,
+  updateFAQsContent,
+  updateCallBookingContent,
+  WebContentcreate,
+  WebContentget,
+  uploadImages,
+};

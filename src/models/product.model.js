@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  description:{
+  description: {
     type: String,
     required: true,
     trim: true,
@@ -20,23 +20,26 @@ const productSchema = new mongoose.Schema({
 
   details: {
     type: String,
-    required: true
+    required: true,
   },
 
   features: [
     {
-    type: String,
-    }
+      type: String,
+    },
   ],
 
   image: [
     {
       type: String,
       required: true,
-      trim: true,
     },
   ],
 
+  livePreview: {
+    default: null,
+    type: String,
+  },
   price: {
     type: Number,
     required: true,
@@ -44,7 +47,7 @@ const productSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ["Electronics", "Apparel", "Books", "Furniture", "Other"], // Define allowed categories
+    // Define allowed categories
     default: "Other",
   },
 
@@ -53,6 +56,70 @@ const productSchema = new mongoose.Schema({
       type: String,
     },
   ],
+
+  stock: {
+    type: Number,
+    default: 1,
+  },
+
+  likeSummary: {
+    count: {
+      type: Number,
+      default: 0,
+    },
+    likedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  },  
+
+  reviewIds: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
+  }],
+  reviewcount: {
+    type: Number,
+    default: 0,
+  },
+  reviewavg: {
+    type: Number,
+    default: 0,
+  },  
+
+
+  
+  totalOrders: {
+    type: Number,
+    default: 0,
+  },
+
+
+
+  orderby: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  totalReturns: {
+    type: Number,
+    default: 0,
+  },
+  totalSuccessfulDeliveries: {
+    type: Number,
+    default: 0,
+  },
+  totalReviews: {
+    type: Number,
+    default: 0,
+  },
+  averageRating: {
+    type: Number,
+    default: 0,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now, // Automatically set creation date
@@ -63,7 +130,7 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-productSchema.pre('save', function (next) {
+productSchema.pre("save", function (next) {
   this.updatedAt = Date.now(); // Update the updatedAt timestamp before saving
   next();
 });

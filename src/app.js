@@ -39,12 +39,19 @@ res.json({message: "Welcome to the API"});
 //Routes Import
 import userRoutes from './routes/user.routes.js';
 import WebContent from './routes/webContent.routes.js';
+import product  from './routes/Product.routes.js';
+import orders from './routes/order.routes.js';
+import discountcoupon from './routes/DiscountCoupon.routes.js';
+import Contact from './routes/Contact.routes.js';
 
 
 //Routes Definition
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/content', WebContent);
-
+app.use('/api/v1/products', product);
+app.use('/api/v1/orders', orders);
+app.use('/api/v1/discountcoupon', discountcoupon);
+app.use('/api/v1/contact', Contact);
 
 
 export default app;

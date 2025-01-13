@@ -2,39 +2,71 @@
 import mongoose from "mongoose";
 
 
-const orderSchema = new Schema({
+const orderSchema = new mongoose.Schema({
     user: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
     },
-    products: [{
-      productId: {
-        type: Schema.Types.ObjectId,
+    products:[{
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true
       },
       quantity: {
-        type: Number,
-        required: true
-      },
-      price: {
+        default: 1,
         type: Number,
         required: true
       }
     }],
+    currency: {
+      type: String,
+      default: 'INR'
+    },
+    coupon : {
+      type: String
+    },
     totalAmount: {
       type: Number,
       required: true
     },
-    status: {
+
+    paymentStatus: {
       type: String,
       default: 'Pending',
-      enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled']
+      enum: ['Pending', 'Completed', 'Failed']
+    },
+    paymentsid: {
+      type: String
+    },
+    paymentResult: {
+      id: {
+        type: String
+      },
+      status: {
+        type: String
+      }
+    },
+    paymentType: {
+      type: String,
+      default: 'Cash on Delivery',
+      enum: ['Cash on Delivery', 'Card Payment', 'UPI Payment']
+
+    },
+    paidAt: {
+      type: Date
+    },
+    orderStatus: {
+      type: String,
+      default: 'Pending',
+      enum: ['Pending', 'Processing', 'Delivered', 'Cancelled']
     },
     shippingAddress: {
-      type: addressSchema,
+      type: String,
       required: true
+    },
+    orderId: {
+      type: String
     },
     orderedAt: {
       type: Date,

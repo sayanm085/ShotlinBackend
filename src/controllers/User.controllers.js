@@ -1,5 +1,6 @@
 import {asyncHandler} from '../utils/asyncHandler.js';
-import {ApiResponse} from '../utils/ApiResponse.js';
+import {ApiResponse} from '../utils/ApiResponse.js'
+import uploadImage from '../utils/cloudinary.js';;
 import User from '../models/User.model.js';
 import jwt from 'jsonwebtoken';
 
@@ -71,6 +72,8 @@ const registerUser = asyncHandler(async (req, res) => {
   // send a success response
   res.status(201).json(ApiResponse(201, userResponse, "User created successfully", true));
 
+  // send email to the user email , confirm email and welcome email
+
 
 
   }
@@ -131,9 +134,13 @@ const registerUser = asyncHandler(async (req, res) => {
     res
       .status(201)
       .json(ApiResponse(201, userResponse, "User created successfully", true));
+
+      //! send email to the user email , welcome email
   }
 
   
+
+
 
 });
 
@@ -296,5 +303,52 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 
+const profileEdit= asyncHandler(async (req, res) => {
 
-export {registerUser,loginUser,logoutUser , refreshAccessToken};
+  const { fullName, username } = req.body;
+  const avatar = req.file?.path;
+ // get the user id from the request object
+  const userid = req.user._id;
+  const user = await User.findById(userid);
+
+  // fist check if the username is available
+  const existing = await User .findOne({ username });
+
+  if (existing && existing._id.toString() !== userid) {
+    return res.status(400).json(ApiResponse(400, null, "Username is already in use", false));
+  }
+
+
+    // Validate and upload images to cloudinary
+  let uploadedImage;
+   if (avatar) {
+     uploadedImage = await uploadImage(avatar);
+  }
+
+
+  user.username = username || user.username;
+  user.fullName = fullName || user.fullName;
+  user.avatar = uploadedImage || user.avatar;
+
+ 
+
+  // save the updated user object to the database
+  await user.save();
+
+  // Prepare the response object with only the necessary fields
+  const userResponse = {
+    username: user.username,
+    email: user.email,
+    fullName: user.fullName,
+    avatar: user.avatar,
+  };
+
+  // send a success response
+  res.status(200).json(ApiResponse(200, userResponse, "User updated successfully", true));
+
+  
+});
+
+
+
+export {registerUser,loginUser,logoutUser , refreshAccessToken,profileEdit};

@@ -34,10 +34,6 @@ const userSchema = new mongoose.Schema({
         default: null,
         type: String, // URL to avatar image
       },
-      coverImage: {
-        default: null,
-        type: String, // URL to cover image
-      },
       password: {
         type: String,
         required: true,
@@ -57,11 +53,16 @@ const userSchema = new mongoose.Schema({
         type: String, // Refers to the address schema
         required: false
       },
-      // orders: [{
-      //   default: [],  // Default to an empty array
-      //   type: Schema.Types.ObjectId,
-      //   ref: 'Order' // Reference to the Order model (assumed you have an Order schema)
-      // }],
+      orders: [{
+        default: [],  // Default to an empty array
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order' // Reference to the Order model (assumed you have an Order schema)
+      }],
+      wishlist: [{
+        default: [],  // Default to an empty array
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product' // Reference to the Product model (assumed you have a Product schema)
+      }],
       // cart: [{
       //   productId: {
       //     type: Schema.Types.ObjectId,
