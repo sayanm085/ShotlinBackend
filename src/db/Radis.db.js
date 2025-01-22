@@ -1,27 +1,18 @@
 import redis from 'redis';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // Create a new redis client
 
-const data={
-    username: 'default',
-    password: 'w0qm0OsbyFWXZz4mf16nEKyjpjl0eHM0',
-    socket: {
-        host: 'redis-11835.c295.ap-southeast-1-1.ec2.redns.redis-cloud.com',
-        port: 11835
-    }
-}
+
 
 const redisClient = redis.createClient({
-    username: 'default',
-    password: 'w0qm0OsbyFWXZz4mf16nEKyjpjl0eHM0',
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
     socket: {
-        host: 'redis-11835.c295.ap-southeast-1-1.ec2.redns.redis-cloud.com',
-        port: 11835
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT
     }
 });
-
-
-
 
 
 redisClient.on("error", (err) => console.error("Redis Error:", err));
