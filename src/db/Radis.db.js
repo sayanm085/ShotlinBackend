@@ -11,7 +11,15 @@ const data={
     }
 }
 
-const redisClient = redis.createClient({});
+const redisClient = redis.createClient({
+    username: 'default',
+    password: 'w0qm0OsbyFWXZz4mf16nEKyjpjl0eHM0',
+    socket: {
+        host: 'redis-11835.c295.ap-southeast-1-1.ec2.redns.redis-cloud.com',
+        port: 11835
+    }
+});
+
 
 
 
