@@ -45,7 +45,7 @@ app.get("/api/get-cookie", (req, res) => {
 //Routes Import
 import userRoutes from './routes/user.routes.js';
 import WebContent from './routes/webContent.routes.js';
-import product  from './routes/Product.routes.js';
+import product from './routes/Product.routes.js';
 import orders from './routes/order.routes.js';
 import discountcoupon from './routes/DiscountCoupon.routes.js';
 import Contact from './routes/Contact.routes.js';

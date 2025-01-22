@@ -1,5 +1,5 @@
-import connectDB from "./db/Database.js";
-import app from "./app.js";
+import connectDB from "./src/db/Database.js";
+import app from "./src/app.js";
 import dotenv from 'dotenv';
 import os from 'os';
 import cluster from "cluster";
