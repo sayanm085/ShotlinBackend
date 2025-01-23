@@ -1,5 +1,5 @@
-import { Router } from "express";
-import {
+const { Router } = require("express");
+const {
   uploadImages,
   WebContentcreate,
   WebContentget,
@@ -9,12 +9,11 @@ import {
   updateWhyChooseUsContent,
   updateCallBookingContent,
   updateFAQsContent,
-} from "../controllers/WebContent.controllers.js";
-import upload from "../middlewares/multer.middleware.js";
-import { verifyAdminJWT } from "../middlewares/auth.middleware.js";
+} = require("../controllers/WebContent.controllers.js");
+const upload = require("../middlewares/multer.middleware.js");
+const { verifyAdminJWT } = require("../middlewares/auth.middleware.js");
 
 const router = Router();
-
 
 // Upload Images
 router.route("/uploadImages").post(
@@ -22,15 +21,8 @@ router.route("/uploadImages").post(
   upload.fields([
     { name: "image", maxCount: 10 },
   ]),
-  uploadImages);
-
-
-
-
-
-
-
-
+  uploadImages
+);
 
 // Update Hero Content
 router.route("/updateHeroContent").put(
@@ -51,7 +43,7 @@ router.route("/updateBrandPartnersContent").put(
 );
 
 // Update Services Content
-router.route("/updateServicesContent").put(verifyAdminJWT,updateServicesContent);
+router.route("/updateServicesContent").put(verifyAdminJWT, updateServicesContent);
 
 // Update Why Choose Us Content
 router.route("/updateWhyChooseUsContent").put(
@@ -63,17 +55,12 @@ router.route("/updateWhyChooseUsContent").put(
 );
 
 // Update Call Booking Content
-router.route("/updateCallBookingContent").put(verifyAdminJWT,updateCallBookingContent);
+router.route("/updateCallBookingContent").put(verifyAdminJWT, updateCallBookingContent);
 
 // Update FAQs Content
-router.route("/updateFAQsContent").put(verifyAdminJWT,updateFAQsContent);
+router.route("/updateFAQsContent").put(verifyAdminJWT, updateFAQsContent);
 
-
-
-router.route("/webcontent-create").post(verifyAdminJWT,WebContentcreate);
+router.route("/webcontent-create").post(verifyAdminJWT, WebContentcreate);
 router.route("/webcontent-get").get(WebContentget);
 
-
-
-
-export default router;
+module.exports = router;

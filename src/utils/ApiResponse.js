@@ -7,4 +7,4 @@ function ApiResponse(statusCode, data, message = "Success") {
     };
 }
 
-export { ApiResponse }
+module.exports = { ApiResponse };

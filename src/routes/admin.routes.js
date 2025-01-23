@@ -1,11 +1,11 @@
-import { Router } from "express";
-import { createAdmin, loginAdmin ,logoutAdmin} from "../controllers/admin.controllers.js";
-import {verifyAdminJWT }from "../middlewares/auth.middleware.js";
+const { Router } = require("express");
+const { createAdmin, loginAdmin, logoutAdmin } = require("../controllers/admin.controllers.js");
+const { verifyAdminJWT } = require("../middlewares/auth.middleware.js");
 
 const router = Router();
 
 router.route("/createAdmin").post(createAdmin);
 router.route("/loginAdmin").post(loginAdmin);
-router.route("/logoutAdmin").post(verifyAdminJWT,logoutAdmin);
+router.route("/logoutAdmin").post(verifyAdminJWT, logoutAdmin);
 
-export default router;
+module.exports = router;

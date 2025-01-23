@@ -22,4 +22,4 @@ function createApiError(statusCode, message = "Something went wrong", errors = [
     return error;
 }
 
-export { createApiError };
+module.exports = { createApiError };

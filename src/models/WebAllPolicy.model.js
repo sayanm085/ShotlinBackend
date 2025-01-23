@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const WebAllPolicySchema = new mongoose.Schema({
     about: {
@@ -25,4 +25,4 @@ const WebAllPolicySchema = new mongoose.Schema({
 
 const WebAllPolicy = mongoose.model('WebAllPolicy', WebAllPolicySchema);
 
-export default WebAllPolicy;
+module.exports = WebAllPolicy;

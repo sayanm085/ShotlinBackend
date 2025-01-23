@@ -1,7 +1,7 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import jwt from "jsonwebtoken";
-import User from "../models/User.model.js";
-import Admin from "../models/Admin.model.js";
+const {asyncHandler} = require("../utils/asyncHandler.js");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User.model.js");
+const Admin = require("../models/Admin.model.js");
 
 const verifyJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies?.AccessToken;
@@ -29,8 +29,6 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   next();
 });
 
-
-
 const verifyAdminJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies?.AdminAccessToken;
   if (!token) {
@@ -55,8 +53,6 @@ const verifyAdminJWT = asyncHandler(async (req, res, next) => {
 
   req.admin = admin;
   next();
-  
 });
 
-
-export { verifyJWT, verifyAdminJWT };
+module.exports = { verifyJWT, verifyAdminJWT };

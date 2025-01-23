@@ -1,11 +1,11 @@
-import {asyncHandler} from '../utils/asyncHandler.js';
-import {ApiResponse} from '../utils/ApiResponse.js';
-import uploadImage from '../utils/cloudinary.js';
-import User from '../models/User.model.js';
-import jwt from 'jsonwebtoken';
-import mailsend from "../utils/nodemailer.utils.js";
-import {OTPtemplate,welcomeTemplate} from "../email template/email template.js";
-import admin from '../utils/firebaseAdmin.js';
+const { asyncHandler } = require('../utils/asyncHandler.js');
+const { ApiResponse } = require('../utils/ApiResponse.js');
+const uploadImage = require('../utils/cloudinary.js');
+const User = require('../models/User.model.js');
+const jwt = require('jsonwebtoken');
+const mailsend = require("../utils/nodemailer.utils.js");
+const { OTPtemplate, welcomeTemplate } = require("../email template/email template.js");
+const admin = require('../utils/firebaseAdmin.js');
 
 // Utility function for setting cookies
 const setAuthCookies = (res, accessToken, refreshToken) => {
@@ -411,4 +411,13 @@ const profileEdit= asyncHandler(async (req, res) => {
 
 
 
-export {registerUser,loginUser,logoutUser , refreshAccessToken,profileEdit, verifyEmail,resendotp,forgotPassword};
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  profileEdit,
+  verifyEmail,
+  resendotp,
+  forgotPassword
+};

@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import redisClient from "../db/Radis.db.js";
+const mongoose = require("mongoose");
+const redisClient = require("../db/Radis.db.js");
+
 const webContentSchema = new mongoose.Schema(
   {
     hero: {
@@ -10,7 +11,7 @@ const webContentSchema = new mongoose.Schema(
         type: String,
       },
       heroImage: {
-        default:null,
+        default: null,
         type: String,
       },
       heroVideoUrl: {
@@ -18,7 +19,6 @@ const webContentSchema = new mongoose.Schema(
       },
     },
 
-    
     BrandPartners: [
       {
         brandName: String,
@@ -42,20 +42,18 @@ const webContentSchema = new mongoose.Schema(
     ],
 
     comparison: {
-        Shotlin: [
-          {
-            description:String,
-           
-          },
-        ],
-  
-        OtherAgencies: [
-          {
-            description: String,
-          },
-        ],
-    },
+      Shotlin: [
+        {
+          description: String,
+        },
+      ],
 
+      OtherAgencies: [
+        {
+          description: String,
+        },
+      ],
+    },
 
     callbooking: {
       type: String,
@@ -67,7 +65,6 @@ const webContentSchema = new mongoose.Schema(
         FAQsAnswer: String,
       },
     ],
-
   },
   { timestamps: true }
 );
@@ -90,5 +87,4 @@ webContentSchema.post("findOneAndDelete", async function (doc) {
 });
 
 const WebContent = mongoose.model("WebContent", webContentSchema);
-export default WebContent;
-
+module.exports = WebContent;

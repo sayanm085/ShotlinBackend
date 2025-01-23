@@ -1,6 +1,6 @@
-import {asyncHandler} from '../utils/asyncHandler.js';
-import {ApiResponse} from '../utils/ApiResponse.js';
-import Coupon from '../models/DiscountCoupon.model.js';
+const { asyncHandler } = require('../utils/asyncHandler.js');
+const { ApiResponse } = require('../utils/ApiResponse.js');
+const Coupon = require('../models/DiscountCoupon.model.js');
 
 
 const createCoupon = asyncHandler(async (req, res) => {
@@ -28,4 +28,7 @@ const getCoupons = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, 'Coupons fetched successfully', coupons));
 });
 
-export {createCoupon, getCoupons};
+module.exports = {
+  createCoupon,
+  getCoupons
+};

@@ -1,10 +1,8 @@
-import redis from 'redis';
-import dotenv from 'dotenv';
+const redis = require('redis');
+const dotenv = require('dotenv');
 dotenv.config();
+
 // Create a new redis client
-
-
-
 const redisClient = redis.createClient({
     username: process.env.REDIS_USERNAME,
     password: process.env.REDIS_PASSWORD,
@@ -14,9 +12,8 @@ const redisClient = redis.createClient({
     }
 });
 
-
 redisClient.on("error", (err) => console.error("Redis Error:", err));
 
 redisClient.connect();
 
-export default redisClient;
+module.exports = redisClient;

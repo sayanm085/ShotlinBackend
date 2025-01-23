@@ -1,8 +1,8 @@
-import connectDB from "./src/db/Database.js";
-import app from "./src/app.js";
-import dotenv from 'dotenv';
-import os from 'os';
-import cluster from "cluster";
+const connectDB = require("./src/db/Database.js");
+const app = require("./src/app.js");
+const dotenv = require('dotenv');
+const os = require('os');
+const cluster = require("cluster");
 
 
 dotenv.config();

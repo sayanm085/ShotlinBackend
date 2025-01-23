@@ -1,5 +1,5 @@
-import admin from "firebase-admin";
-import serviceAccountKey from "./serviceAccountKey.js";
+const admin = require("firebase-admin");
+const serviceAccountKey = require("./serviceAccountKey.js");
 
 // Load Firebase service account key (Replace with your actual credentials)
 
@@ -7,4 +7,4 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
 });
 
-export default admin;
+module.exports = admin;
