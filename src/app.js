@@ -43,7 +43,7 @@ app.get("/api/get-cookie", (req, res) => {
 // Routes Import
 const userRoutes = require('./routes/user.routes.js');
 const WebContent = require('./routes/webContent.routes.js');
-const product = require('./routes/Product.routes.js');
+const productRoutes = require('./routes/Product.routes.js');
 const orders = require('./routes/order.routes.js');
 const discountcoupon = require('./routes/DiscountCoupon.routes.js');
 const Contact = require('./routes/Contact.routes.js');
@@ -52,7 +52,7 @@ const admin = require('./routes/admin.routes.js');
 // Routes Definition
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/content', WebContent);
-app.use('/api/v1/products', product);
+app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/orders', orders);
 app.use('/api/v1/discountcoupon', discountcoupon);
 app.use('/api/v1/contact', Contact);
