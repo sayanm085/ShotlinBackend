@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate-v2");
-const redisClient = require("../db/Radis.db.js");
+import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
+import redisClient from "../db/Radis.db.js";
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
@@ -58,4 +58,4 @@ productSchema.plugin(mongoosePaginate);
 // Export the model
 const Product = mongoose.model("Product", productSchema);
 
-module.exports = Product;
+export default Product;

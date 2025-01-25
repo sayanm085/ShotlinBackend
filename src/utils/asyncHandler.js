@@ -7,13 +7,15 @@ const asyncHandler = (requestHandler) => {
     } catch (err) {
       res.status(500).json({
         statusCode: 500,
-        data: { error: err.message },
+        data: {error: err.message},
         success: false,
         message: "Internal Server Error",
+
       });
       next();
     }
   };
 };
 
-module.exports = { asyncHandler };
+
+export { asyncHandler };

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const discountCouponSchema = new mongoose.Schema({
     code: {
@@ -63,4 +63,4 @@ discountCouponSchema.pre('save', function (next) {
 
 const DiscountCoupon = mongoose.models.DiscountCoupon || mongoose.model('DiscountCoupon', discountCouponSchema);
 
-module.exports = DiscountCoupon;
+export default DiscountCoupon;

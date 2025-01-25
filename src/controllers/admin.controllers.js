@@ -1,6 +1,6 @@
-const { asyncHandler } = require('../utils/asyncHandler.js');
-const { ApiResponse } = require('../utils/ApiResponse.js');
-const Admin = require("../models/Admin.model.js");
+import {asyncHandler} from '../utils/asyncHandler.js';
+import {ApiResponse} from '../utils/ApiResponse.js';
+import Admin from "../models/Admin.model.js";
 
 
 
@@ -68,5 +68,5 @@ const setAuthCookies = (res, accessToken, refreshToken) => {
   });
 
 
-module.exports = { createAdmin, loginAdmin, logoutAdmin };
+export {createAdmin,loginAdmin,logoutAdmin };
 

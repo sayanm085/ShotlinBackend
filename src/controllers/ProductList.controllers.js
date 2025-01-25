@@ -1,12 +1,12 @@
-const Product = require('../models/Product.model.js');
-const User = require('../models/User.model.js');
-const { asyncHandler } = require('../utils/asyncHandler.js');
-const { ApiResponse } = require('../utils/ApiResponse.js');
-const uploadImage = require('../utils/cloudinary.js');
-const Review = require('../models/Review.model.js');
-const order = require('../models/Order.model.js');
-const redisClient = require('../db/Radis.db.js');
-const Fuse = require('fuse.js');
+import Product from '../models/Product.model.js';
+import User from '../models/User.model.js';
+import {asyncHandler} from '../utils/asyncHandler.js';
+import {ApiResponse} from '../utils/ApiResponse.js';
+import uploadImage from '../utils/cloudinary.js';
+import Review from '../models/Review.model.js';
+import order from '../models/Order.model.js';
+import redisClient from '../db/Radis.db.js';
+import Fuse from 'fuse.js';
 
 // add product to database and upload images to cloudinary  
 
@@ -462,4 +462,4 @@ const productDetails = asyncHandler(async (req, res) => {
 
 
 
-module.exports = { productUpload, productUpdate, productDelete, productLike, productReview, productReviewDelete, productSearch, productDetails };
+export { productUpload, productUpdate, productDelete,productLike,productReview,productReviewDelete,productSearch,productDetails };

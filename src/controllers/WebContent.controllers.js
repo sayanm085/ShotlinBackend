@@ -1,10 +1,10 @@
-const WebContent = require('../models/WebContent.model.js');
-const { asyncHandler } = require('../utils/asyncHandler.js');
-const { ApiResponse } = require('../utils/ApiResponse.js');
-const uploadImage = require('../utils/cloudinary.js');
-const redisClient = require('../db/Radis.db.js');
+import WebContent  from '../models/WebContent.model.js';
+import {asyncHandler} from '../utils/asyncHandler.js';
+import {ApiResponse} from '../utils/ApiResponse.js';
+import uploadImage from '../utils/cloudinary.js';
+import redisClient from '../db/Radis.db.js';
 
-// Hero Content update data controller
+// Hero Content update data  controller
 const updateHeroContent = asyncHandler(async (req, res, next) => {
   try {
     const { heroTitle, heroDescription, heroVideoUrl } = req.body;
@@ -38,7 +38,110 @@ const updateHeroContent = asyncHandler(async (req, res, next) => {
   }
 });
 
-// BrandPartners Content update, add new data and delete controller
+// * BrandPartners Content update,add new data and delete controller
+
+// const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
+//   const brandImageFile = req.files?.image?.[0]?.path || null;
+//   const { text, id, type } = req.body;
+  
+//   let result;
+  
+//   switch (type) {
+//     case 'brandPevContentUpdate':
+//       result = {
+//         brandId: id,
+//         brandName: text,
+//         brandLogo: brandImageFile,
+//         typeof: type,
+//       };
+//       break;
+  
+//     case 'NewbrandContentAdd':
+//       result = {
+//         brandName: text,
+//         brandLogo: brandImageFile,
+//         typeof: type,
+//       };
+//       break;
+  
+//     case 'brandContentDelete':
+//       result = {
+//         brandId: id,
+//       };
+//       break;
+  
+//     default:
+//       result = null; // Handle invalid type
+//       console.error('Invalid type provided:', type);
+//       break;
+//   }
+
+//   // Retrieve the existing WebContent
+//   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
+
+//   if (!webContent) {
+//     return next(
+//       new ApiResponse(400, "WebContent not found", "WebContent not found")
+//     );
+//   }
+
+// // Update BrandPartners content fields
+// if (brandPevContentUpdate && Array.isArray(brandPevContentUpdate)) {
+//   brandPevContentUpdate.forEach ( async({ brandId, brandName }) => {
+
+//     const brandLogo = req.files?.brandLogo
+//     console.log(brandLogo);
+
+//     if (brandId) {
+//       const brandPartner = webContent.BrandPartners.id(brandId);
+
+//       // Update fields only if they exist
+//       if (brandPartner) {
+//         if (brandName) brandPartner.brandName = brandName;
+
+//         const uploadedImageUrl = await uploadImage(brandLogo);
+//         // console.log(uploadedImageUrl);
+//         if (uploadedImageUrl) brandPartner.brandLogo = uploadedImageUrl;
+//       }
+//     }
+//   });
+// }
+
+// // If brandName and brandLogo exist, add a new BrandPartners object
+// if (NewbrandContentAdd && Array.isArray(NewbrandContentAdd)) {
+//   NewbrandContentAdd.forEach(({ brandName, brandLogo }) => {
+//     // Add a new BrandPartners object only if both brandName and brandLogo exist
+//     if (brandName && brandLogo) {
+//       webContent.BrandPartners.push({ brandName, brandLogo });
+//     }
+//   });
+// }
+
+//   // If deleteobj exists, delete the BrandPartners object
+
+//   if (Array.isArray(brandContentDelete) && brandContentDelete.length > 0) {
+//     brandContentDelete.forEach((brandId) => {
+//       webContent.BrandPartners.pull({ _id: brandId });
+//     });
+//   }
+
+//   // Save the updated WebContent to the database
+//   await webContent.save();
+
+//   // Send success response
+//   res
+//     .status(200)
+//     .json(
+//       ApiResponse(
+//         200,
+//         webContent.BrandPartners,
+//         "BrandPartners content updated successfully",
+//         true
+//       )
+//     );
+
+// });
+
 const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
   const brandImageFile = req.files?.brandLogo?.[0]?.path || null;
   const { text, id, type } = req.body;
@@ -67,8 +170,10 @@ const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
         new ApiResponse(400, "Invalid operation type", "Invalid type provided")
       );
   }
-
   // Retrieve the existing WebContent
+
+
+
   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
 
   if (!webContent) {
@@ -92,7 +197,8 @@ const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Handle additions
+
+  // *Handle additions
   if (operationData?.additions) {
     const additionPromises = operationData.additions
       .filter(({ brandName, brandLogo }) => brandName && brandLogo) // Filter invalid entries
@@ -115,6 +221,7 @@ const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
     });
   }
 
+
   // Save the updated WebContent
   await webContent.save();
 
@@ -128,7 +235,9 @@ const updateBrandPartnersContent = asyncHandler(async (req, res, next) => {
   );
 });
 
-// Services Content update, add new data and delete controller
+
+// services Content update,add new data and delete controller
+
 const updateServicesContent = asyncHandler(async (req, res, next) => {
   const { servicesContentUpdate, NewServicesContentAdd, servicesContentDelete } = req.body;
 
@@ -143,49 +252,56 @@ const updateServicesContent = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Update Services content fields
-  if (servicesContentUpdate && Array.isArray(servicesContentUpdate)) {
-    servicesContentUpdate.forEach(({ serviceId, serviceName, serviceDescription }) => {
-      if (serviceId) {
-        const service = webContent.Services.id(serviceId);
+// Update Services content fields
+if (servicesContentUpdate && Array.isArray(servicesContentUpdate)) {
+  servicesContentUpdate.forEach(({ serviceId, serviceName, serviceDescription }) => {
+    if (serviceId) {
+      const service = webContent.Services.id(serviceId);
 
-        // Update fields only if they exist
-        if (service) {
-          if (serviceName) service.serviceName = serviceName;
-          if (serviceDescription) service.serviceDescription = serviceDescription;
-        }
+      // Update fields only if they exist
+      if (service) {
+        if (serviceName) service.serviceName = serviceName;
+        if (serviceDescription) service.serviceDescription = serviceDescription;
       }
-    });
-  }
+    }
+  });
+}
 
-  // If serviceName and serviceDescription exist, add a new Services object
-  if (NewServicesContentAdd && Array.isArray(NewServicesContentAdd)) {
-    NewServicesContentAdd.forEach(({ serviceName, serviceDescription }) => {
-      // Add a new Services object only if both serviceName and serviceDescription exist
-      if (serviceName && serviceDescription) {
-        webContent.Services.push({ serviceName, serviceDescription });
-      }
-    });
-  }
+// If serviceName and serviceDescription exist, add a new Services object
 
-  // If deleteobj exists, delete the Services object
-  if (Array.isArray(servicesContentDelete) && servicesContentDelete.length > 0) {
-    servicesContentDelete.forEach((serviceId) => {
-      webContent.Services.pull({ _id: serviceId });
-    });
-  }
+if (NewServicesContentAdd && Array.isArray(NewServicesContentAdd)) {
+  NewServicesContentAdd.forEach(({ serviceName, serviceDescription }) => {
+    // Add a new Services object only if both serviceName and serviceDescription exist
+    if (serviceName && serviceDescription) {
+      webContent.Services.push({ serviceName, serviceDescription });
+    }
+  });
+}
+
+// If deleteobj exists, delete the Services object 
+
+if (Array.isArray(servicesContentDelete) && servicesContentDelete.length > 0) {
+  servicesContentDelete.forEach((serviceId) => {
+    webContent.Services.pull({ _id: serviceId });
+  });
+}
+
 
   // Save the updated WebContent to the database
+
   await webContent.save();
 
   // Send success response
   res.status(200).json(ApiResponse(200,webContent.Services,"Services content updated successfully",true));
+
+
 });
 
-// WhyChooseUs Content update, add new data and delete controller
+// WhyChooseUs Content update,add new data and delete controller
+
 const updateWhyChooseUsContent = asyncHandler(async (req, res, next) => {
   const WhyChooseUsContentImageFile = req.files?.WhyChooseUsLogo?.[0]?.path || null;
-  const { title, reason, id, type } = req.body;
+  const { title,reason, id, type } = req.body;
 
   let operationData;
 
@@ -200,6 +316,7 @@ const updateWhyChooseUsContent = asyncHandler(async (req, res, next) => {
       operationData = {
         additions: [{ logo:WhyChooseUsContentImageFile, title, reason }],
       };
+
       break;
 
     case 'WhyChooseUsContentDelete':
@@ -481,7 +598,13 @@ let uploadImages = async (req, res) => {
 
 }
 
-module.exports = {
+
+
+
+
+
+
+export {
   updateHeroContent,
   updateBrandPartnersContent,
   updateServicesContent,

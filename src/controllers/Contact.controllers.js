@@ -1,7 +1,7 @@
-const Contact = require('../models/Contact.model.js');
-const { asyncHandler } = require('../utils/asyncHandler.js');
-const { ApiResponse } = require('../utils/ApiResponse.js');
-const mailsend = require("../utils/nodemailer.utils.js");
+import Contact from '../models/Contact.model.js';
+import {asyncHandler} from '../utils/asyncHandler.js';
+import {ApiResponse} from '../utils/ApiResponse.js';
+import mailsend from "../utils/nodemailer.utils.js";
 
 
 const createContactUs = asyncHandler(async (req, res) => {
@@ -101,4 +101,4 @@ const createContactUs = asyncHandler(async (req, res) => {
     
   });
 
-module.exports = { createContactUs };
+  export {createContactUs};

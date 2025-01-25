@@ -1,9 +1,9 @@
-const connectDB = require("./src/db/Database.js");
-const app = require("./src/app.js");
-const dotenv = require('dotenv');
-const os = require('os');
-const cluster = require("cluster");
-
+import connectDB from "./db/Database.js";
+import app from "./app.js";
+import dotenv from 'dotenv';
+import os from 'os';
+import cluster from "cluster";
+import { PORT } from "./constants.js";
 
 dotenv.config();
 
@@ -41,8 +41,8 @@ dotenv.config();
 
 connectDB()
 .then(() => {
-    app.listen(process.env.PORT || 8000, () => {
-        console.log(`Server is running on port http://localhost:${process.env.PORT} ||8000`);
+    app.listen(PORT || 8000, () => {
+        console.log(`Server is running on port http://localhost:${PORT} ||8000`);
     });
 })
 .catch((error) => {

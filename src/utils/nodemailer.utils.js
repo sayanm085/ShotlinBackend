@@ -1,22 +1,25 @@
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
-dotenv.config();
+import nodemailer from 'nodemailer';
 
+import {  SMTP_PASSWORD,
+    SMTP_USERNAME,
+    EMAIL_FROM,
+    SMTP_HOST,
+    SMTP_PORT} from '../constants.js'
 const mailsend = async (to, subject, html) => {
 
     const transporter = nodemailer.createTransport({
         service: 'Zoho Mail',
-        port: process.env.SMTP_PORT,               // true for 465, false for other ports
-        host: process.env.SMTP_HOST,
+        port: SMTP_PORT,               // true for 465, false for other ports
+        host: SMTP_HOST,
         secure: true, // true for 465, false for other ports
         auth: {
-            user: process.env.SMTP_USERNAME,
-            pass: process.env.SMTP_PASSWORD
+            user: SMTP_USERNAME,
+            pass: SMTP_PASSWORD
         }
     });
 
     const mailOptions = {
-        from: process.env.EMAIL_FROM,
+        from: EMAIL_FROM,
         to: to,
         subject: subject,
         html: html
@@ -31,4 +34,4 @@ const mailsend = async (to, subject, html) => {
 
 };
 
-module.exports = mailsend;
+export default mailsend;

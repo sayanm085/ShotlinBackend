@@ -1,7 +1,8 @@
-const {asyncHandler} = require("../utils/asyncHandler.js");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User.model.js");
-const Admin = require("../models/Admin.model.js");
+import { asyncHandler } from "../utils/asyncHandler.js";
+import jwt from "jsonwebtoken";
+import User from "../models/User.model.js";
+import Admin from "../models/Admin.model.js";
+import {ACCESS_TOKEN_SECRET} from "../constants.js";
 
 const verifyJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies?.AccessToken;
@@ -11,7 +12,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
   let decoded;
   try {
-    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
   } catch (error) {
     return res.status(403).json({ message: "Invalid token" });
   }
@@ -29,6 +30,8 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   next();
 });
 
+
+
 const verifyAdminJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies?.AdminAccessToken;
   if (!token) {
@@ -37,7 +40,7 @@ const verifyAdminJWT = asyncHandler(async (req, res, next) => {
 
   let decoded;
   try {
-    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
   } catch (error) {
     return res.status(403).json({ message: "Invalid token" });
   }
@@ -53,6 +56,8 @@ const verifyAdminJWT = asyncHandler(async (req, res, next) => {
 
   req.admin = admin;
   next();
+  
 });
 
-module.exports = { verifyJWT, verifyAdminJWT };
+
+export { verifyJWT, verifyAdminJWT };

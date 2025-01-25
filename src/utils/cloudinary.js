@@ -1,15 +1,16 @@
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
-const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = require('../constants.js');
+import {v2 as cloudinary} from 'cloudinary';
+import fs from 'fs';
+import {CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET} from '../constants.js'
 
 // Configuring cloudinary
 cloudinary.config({
-    cloud_name: CLOUDINARY_CLOUD_NAME,
-    api_key: CLOUDINARY_API_KEY,
-    api_secret: CLOUDINARY_API_SECRET
+    cloud_name:CLOUDINARY_CLOUD_NAME,
+    api_key:CLOUDINARY_API_KEY,
+    api_secret:CLOUDINARY_API_SECRET
 });
 
-// Uploading image to cloudinary and returning the URL of the uploaded image and optimized image
+// Uploading image to cloudinary and returning the URL of the uploaded image  and optimized image
+
 const uploadImage = async (localFilePath) => {
     if (!localFilePath) return null;  // Ensure file path is provided
 
@@ -35,8 +36,8 @@ const uploadImage = async (localFilePath) => {
         // console.log(uploadedImage);
         // console.log('------------------- optimizedImage -------------------');
         // console.log(optimizedImage);
-
-        return optimizedImage; // Return the uploaded and optimized image URLs
+ 
+        return optimizedImage ; // Return the uploaded and optimized image URLs
 
     } catch (error) {
         console.error('Error uploading image:', error);
@@ -44,4 +45,6 @@ const uploadImage = async (localFilePath) => {
     }
 };
 
-module.exports = uploadImage;
+
+
+export default uploadImage;

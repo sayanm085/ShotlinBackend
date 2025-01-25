@@ -15,4 +15,4 @@ let serviceAccountKey = {
 }
 
 
-module.exports = serviceAccountKey;
+export default serviceAccountKey
