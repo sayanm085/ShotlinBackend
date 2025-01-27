@@ -1,4 +1,4 @@
-import Product from '../models/Product.model.js';
+import Product from '../models/product.model.js';
 import User from '../models/User.model.js';
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
