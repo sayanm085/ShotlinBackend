@@ -33,7 +33,7 @@ app.post('/api/set-cookie', (req, res) => {
         sameSite: 'None', // Allows cross-origin cookies (necessary in this case)
         maxAge: 1000 * 60 * 60 * 24 * 7  // Cookie expiration time (1 week)
     });
-    res.send('Cookie set successfully');
+    res.json('Cookie set successfully');
 });
 // GET route to get the cookie
 app.get("/api/get-cookie", (req, res) => {
