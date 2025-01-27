@@ -8,7 +8,7 @@ import crypto from 'crypto';
 let app = express();
 
 app.use(cors({
-    origin: '*',  // Allow all origins
+    origin: 'http://localhost:5173',  // Allow all origins
     credentials: true,  // Allow cookies to be sent with requests
     allowedHeaders: ['Content-Type', 'Authorization '], // Allow the Authorization header to be sent
     allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', ] // Allow the GET, POST, PUT, DELETE methods
