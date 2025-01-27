@@ -3,36 +3,36 @@ dotenv.config();
 
 const PORT = 3000;
  
- const DB_NAME = "Shotlin";
- const DATABASE_URL="mongodb+srv://Shotlin0912:Shotlin0912@shotlin.jpiyx.mongodb.net"
+ const DB_NAME = process.env.DB_NAME;
+ const DATABASE_URL= process.env.DATABASE_URL;
 
 // cloudinary key 
- const CLOUDINARY_CLOUD_NAME= "shotlin";
- const CLOUDINARY_API_KEY= 452998463171572;
- const CLOUDINARY_API_SECRET= "ycIqO_ahCJv_EHtiF5sk40EP-7E";
+ const CLOUDINARY_CLOUD_NAME= process.env.CLOUDINARY_CLOUD_NAME;
+ const CLOUDINARY_API_KEY= process.env.CLOUDINARY_API_KEY;
+ const CLOUDINARY_API_SECRET= process.env.CLOUDINARY_API_SECRET;
 
  // razerpay key 
- const RAZORPAY_KEY_ID= "rzp_test_eVN0FscTOIsBqP";
- const RAZORPAY_KEY_SECRET= "vP70TYiJruIcQ0CMM6ecN6eA";
+ const RAZORPAY_KEY_ID= process.env.RAZORPAY_KEY_ID;
+ const RAZORPAY_KEY_SECRET= process.env.RAZORPAY_KEY_SECRET;
 
  //Nodemail Configuration for email sending
-const SMTP_PASSWORD = "jTU3drvBQL56";
-const SMTP_USERNAME = "noreply@shotlin.in";
-const EMAIL_FROM = "Shotlin Team<noreply@shotlin.in>";
-const SMTP_HOST = "smtp.zoho.in";
-const SMTP_PORT = 465;
+const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
+const SMTP_USERNAME = process.env.SMTP_USERNAME;
+const EMAIL_FROM = process.env.EMAIL_FROM;
+const SMTP_HOST = process.env.SMTP_HOST;
+const SMTP_PORT = process.env.SMTP_PORT;
 
 // radis Configuration for caching
-const REDIS_USERNAME= "default";
-const REDIS_PASSWORD="w0qm0OsbyFWXZz4mf16nEKyjpjl0eHM0";
-const REDIS_HOST="redis-11835.c295.ap-southeast-1-1.ec2.redns.redis-cloud.com";
-const REDIS_PORT=11835;
+const REDIS_USERNAME= process.env.REDIS_USERNAME;
+const REDIS_PASSWORD= process.env.REDIS_PASSWORD;
+const REDIS_HOST= process.env.REDIS_HOST;
+const REDIS_PORT= process.env.REDIS_PORT;
 
 // JWT Configuration for token generation and verification 
-const REFRESH_TOKEN_SECRET="bcc16f213859c1cfe9806871b1f4f5f8211e678bd168d84e76555e0863bab9d5bd79df0643700fe2ac39890027f938e8169bf2461d30c7e4e0e69d971df776fe";
-const REFRESH_TOKEN_EXPIRY = "7d";
-const ACCESS_TOKEN_SECRET="19202fe8fe06291ddd59bcef7b937d154bc1564204702db04eca5cf6c29e72731e599a419c497067bde0d7b322bfb55b8e097e26f3b84dc32fbffb1e8a4a7bcc"
-const ACCESS_TOKEN_EXPIRY = "1d";
+const REFRESH_TOKEN_SECRET= process.env.REFRESH_TOKEN_SECRET;
+const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
+const ACCESS_TOKEN_SECRET= process.env.ACCESS_TOKEN_SECRET;
+const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
  
 export {
   PORT,
