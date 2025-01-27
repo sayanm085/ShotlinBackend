@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const PORT = 3000;
+const PORT = process.env.PORT;
  
  const DB_NAME = process.env.DB_NAME;
  const DATABASE_URL= process.env.DATABASE_URL;
