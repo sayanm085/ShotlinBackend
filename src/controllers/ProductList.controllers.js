@@ -4,7 +4,6 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import uploadImage from '../utils/cloudinary.js';
 import Review from '../models/Review.model.js';
-import order from '../models/Order.model.js';
 import redisClient from '../db/Radis.db.js';
 import Fuse from 'fuse.js';
 
