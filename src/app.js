@@ -7,12 +7,14 @@ import crypto from 'crypto';
 // Create the Express app
 let app = express();
 
-app.use(cors({
-    origin: 'http://localhost:5173',  // Allow all origins
-    credentials: true,  // Allow cookies to be sent with requests
-    allowedHeaders: ['Content-Type', 'Authorization '], // Allow the Authorization header to be sent
-    allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', ] // Allow the GET, POST, PUT, DELETE methods
-}));
+// app.use(cors({
+//     origin: 'http://localhost:5173',  // Allow all origins
+//     credentials: true,  // Allow cookies to be sent with requests
+//     allowedHeaders: ['Content-Type', 'Authorization '], // Allow the Authorization header to be sent
+//     allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', ] // Allow the GET, POST, PUT, DELETE methods
+// }));
+
+app.use(cors());
 
 app.use(express.json({limit: "16kb"}))
 app.use(express.urlencoded({extended: true, limit: "16kb"}))
