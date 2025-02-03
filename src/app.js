@@ -7,11 +7,12 @@ import crypto from 'crypto';
 // Create the Express app
 let app = express();
 
+// Enable CORS for all requests (for testing purposes) - ✅ Fix CORS policy
 app.use(cors({
-    origin: ['http://localhost:5173',"https://shotlin.in","https://shotlin.com"],  // Allow the React app to connect to the server  (URL of the React app)
-    credentials: true,  // Allow cookies to be sent with requests
-    allowedHeaders: ['Content-Type', 'Authorization '], // Allow the Authorization header to be sent
-    allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', ] // Allow the GET, POST, PUT, DELETE methods
+    origin: ['http://localhost:5173', "https://shotlin.in", "https://shotlin.com"], 
+    credentials: true, // ✅ Allow cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ Fix methods property
+    allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Fix "Authorization " (extra space removed)
 }));
 
 app.use(express.json({limit: "16kb"}))
