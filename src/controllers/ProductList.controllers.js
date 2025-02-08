@@ -1,12 +1,14 @@
-import Product from '../models/Product.model.js';
-import User from '../models/User.model.js';
-import {asyncHandler} from '../utils/asyncHandler.js';
-import {ApiResponse} from '../utils/ApiResponse.js';
-import uploadImage from '../utils/cloudinary.js';
-import Review from '../models/Review.model.js';
-import order from '../models/Order.model.js';
-import redisClient from '../db/Radis.db.js';
-import Fuse from 'fuse.js';
+import Product from "../models/Product.js";
+import User from "../models/User.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import uploadImage from "../utils/cloudinary.js";
+import Review from "../models/Review.model.js";
+import order from "../models/Order.model.js";
+import redisClient from "../db/Radis.db.js";
+import Fuse from "fuse.js";
+
+// ...existing code...
 
 // add product to database and upload images to cloudinary  
 
