@@ -1,4 +1,5 @@
 import {asyncHandler} from '../utils/asyncHandler.js';
+import crypto from 'crypto';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import uploadImage from '../utils/cloudinary.js';
 import User from '../models/User.model.js';
@@ -6,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import mailsend from "../utils/nodemailer.utils.js";
 import {OTPtemplate,welcomeTemplate} from "../email template/email template.js";
 import admin from '../utils/firebaseAdmin.js';
+import { create } from 'domain';
 
 // Utility function for setting cookies
 const setAuthCookies = (res, accessToken, refreshToken) => {
@@ -38,9 +40,15 @@ const generateUsername = (displayName) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { varifyby, fullName, username, email, password, userdata } = req.body;
 
+
   if (varifyby === 'email') {
     if (!fullName || !username || !email || !password) {
       return res.status(400).json(ApiResponse(400, null, "Missing required fields", false));
+    }
+
+    // check if the user already exists
+    if (await User.exists({ username })) {
+      return res.status(400).json(ApiResponse(400, null, "Username is already in use", false));
     }
 
     // Check if the email already exists
@@ -114,7 +122,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
 const verifyEmail = asyncHandler(async (req, res) => {
-  const { email, otp } = req.body;
+  const { email, otp} = req.body;
 
   if (!email || !otp) {
     return res.status(400).json(ApiResponse(400, null, "Email and OTP are required", false));
@@ -133,7 +141,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   }
 
   // Early return if OTP is incorrect
-  if (user.otp !== otp || Date.now() > user.otpExpires) {
+  if (user.otp !== parseInt(otp, 10) || Date.now() > user.otpExpires) {
     return res.status(400).json(ApiResponse(400, null, "Invalid OTP", false));
   }
 
@@ -185,6 +193,7 @@ const resendotp = asyncHandler(async (req, res) => {
   const emailTask = mailsend(email, "New OTP", OTPtemplate(newotp));
 
   // Send response immediately after OTP update
+  console.log("✅ New OTP sent to the user email");
   res.status(200).json(ApiResponse(200, null, "New OTP sent to your email", true));
 
   // Perform email sending in the background
@@ -239,7 +248,7 @@ const loginUser = asyncHandler(async (req, res) => {
     user = await User.findOne({ email }).select("+password +isVerified +refreshToken");
 
     if (!user) {
-      return res.status(404).json(ApiResponse(404, null, "User not found", false));
+      return res.status(404).json(ApiResponse(404, null, "Invalid email or password", false));
     }
 
     if (!user.isVerified) {
@@ -268,7 +277,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // 🔥 Fetch only necessary fields to reduce DB load
     user = await User.findOne({ email: decodedToken.email }).select("+refreshToken");
     if (!user) {
-      return res.status(404).json(ApiResponse(404, null, "User not found", false));
+      return res.status(404).json(ApiResponse(404, null, "Account not found", false));
     }
 
     
@@ -293,6 +302,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // Prepare response
   const userResponse = {
     username: user.username,
+    avatar: user.avatar,
     email: user.email,
     fullName: user.fullName,
   };
@@ -307,7 +317,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-
   // 🚀 Use updateOne instead of findById + save to improve performance
   await User.updateOne({ _id: userId }, { $unset: { refreshToken: 1 } });
 
@@ -409,6 +418,29 @@ const profileEdit= asyncHandler(async (req, res) => {
   
 });
 
+const currentuser = asyncHandler(async (req, res) => {
+  // get the user id from the request object
+  const userid = req.user._id;
+  // find the user with the id
+  const user = await User.findById(userid);
+  // check if the user exists
+  if (!user) {
+    return res.status(404).json(ApiResponse(404, null, "User not found", false));
+  }
+  // Prepare the response object with only the necessary fields
+  const userResponse = {
+    username: user.username,
+    email: user.email,
+    fullName: user.fullName,
+    avatar: user.avatar,
+    createdAt: user.createdAt ? user.createdAt.toISOString().split('T')[0] : null,
+  };
+  // send a success response date and time send in the response
+  console.log("✅ User found", new Date().toLocaleString(),user.createdAt.toLocaleString() );
+
+  res.status(200).json(ApiResponse(200, userResponse, "User found", true));
+});
 
 
-export {registerUser,loginUser,logoutUser , refreshAccessToken,profileEdit, verifyEmail,resendotp,forgotPassword};
+
+export {registerUser,loginUser,logoutUser , refreshAccessToken,profileEdit, verifyEmail,resendotp,forgotPassword,currentuser };

@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
         index: true,
       },
       avatar: {
-        default: null,
+        default: null || "https://www.gravatar.com/avatar/",
         type: String, // URL to avatar image
       },
       password: {

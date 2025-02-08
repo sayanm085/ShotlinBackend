@@ -1,9 +1,10 @@
-import Product from '../models/product.model.js';
+import Product from '../models/Product.model.js';
 import User from '../models/User.model.js';
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import uploadImage from '../utils/cloudinary.js';
 import Review from '../models/Review.model.js';
+import order from '../models/Order.model.js';
 import redisClient from '../db/Radis.db.js';
 import Fuse from 'fuse.js';
 
@@ -431,6 +432,7 @@ const productDetails = asyncHandler(async (req, res) => {
 
        // Check if the product is cached in Redis
         const cacheKey = `product:${id}`;
+        console.log('Product retrieved successfully');
         const cachedProduct = await redisClient.get(cacheKey);
 
         if (cachedProduct) {
@@ -447,7 +449,7 @@ const productDetails = asyncHandler(async (req, res) => {
             return res.status(404).json(new ApiResponse(404, 'Product not found'));
         }
        // 🔥 Store product in Redis with a 15-minute expiry
-       await redisClient.setEx(cacheKey, 60 * 15, JSON.stringify(product)); // 15 minutes; // 300 seconds = 5 minutes
+       await redisClient.setEx(cacheKey, 60 * 15, JSON.stringify(product));// 15 minutes expiry
 
         res.json(new ApiResponse(200, product, 'Product retrieved successfully'));
 

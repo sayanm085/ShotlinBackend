@@ -3,12 +3,14 @@ import {
   uploadImages,
   WebContentcreate,
   WebContentget,
+  productShowcaseimg,
   updateHeroContent,
   updateBrandPartnersContent,
   updateServicesContent,
   updateWhyChooseUsContent,
   updateCallBookingContent,
   updateFAQsContent,
+
 } from "../controllers/WebContent.controllers.js";
 import upload from "../middlewares/multer.middleware.js";
 import { verifyAdminJWT } from "../middlewares/auth.middleware.js";
@@ -25,7 +27,13 @@ router.route("/uploadImages").post(
   uploadImages);
 
 
-
+// Upload Product Showcase Image
+router.route("/productShowcaseimg").post(
+  upload.fields([
+    { name: "productImage", maxCount: 15 },
+  ]),
+  productShowcaseimg
+);
 
 
 

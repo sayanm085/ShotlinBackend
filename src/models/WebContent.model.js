@@ -61,6 +61,16 @@ const webContentSchema = new mongoose.Schema(
       type: String,
     },
 
+    productShowcase: [
+      {
+        productName: {
+          type: String,
+          default: "Product Name",
+        },
+        productImage: String,
+      },
+    ],
+
     FAQs: [
       {
         FAQsQuestion: String,

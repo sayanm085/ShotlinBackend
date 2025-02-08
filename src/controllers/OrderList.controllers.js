@@ -3,7 +3,7 @@ import {ApiResponse} from '../utils/ApiResponse.js';
 import Razorpay from 'razorpay';
 import User from '../models/User.model.js';
 import Order from '../models/Order.model.js';
-import Product from '../models/product.model.js';
+import Product from '../models/Product.model.js';
 import Coupon from '../models/DiscountCoupon.model.js';
 import crypto from 'crypto';
 import mailsend from "../utils/nodemailer.utils.js";

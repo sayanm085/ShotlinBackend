@@ -511,6 +511,7 @@ const WebContentcreate = asyncHandler(async(req, res) => {
 
 const WebContentget = asyncHandler(async (req, res) => {
   const cacheKey = "webcontent:674efd6a7d4788194ecd519a";
+  console.log("WebContent retrieved successfully");
 
   try {
     // 🔥 Check if data is in Redis cache
@@ -541,6 +542,7 @@ const WebContentget = asyncHandler(async (req, res) => {
       data: data,
       message: "WebContent retrieved successfully",
     });
+    
   } catch (error) {
     console.error("❌ Error fetching WebContent:", error.message);
     res.status(500).json({
@@ -548,6 +550,46 @@ const WebContentget = asyncHandler(async (req, res) => {
       message: "Server error",
     });
   }
+});
+
+
+// Upload Images productShowcase api
+
+const productShowcaseimg =asyncHandler(async (req, res, next) => {
+  const productImageFile = req.files?.productImage
+
+   // Retrieve the existing WebContent
+   const webContent = await WebContent.findById("674efd6a7d4788194ecd519a");
+
+   if (!webContent) {
+     return next(
+       new ApiResponse(400, "WebContent not found", "WebContent not found")
+     );
+   }
+
+  // Update productImageFile map fields
+  if (!productImageFile) {
+    return next(new ApiResponse(400, "Product Image required", "Product Image required"));
+  }
+
+  // uoload all the product images 
+  const productImagePromises = productImageFile.map(async (productImage) => {
+    const uploadedImageUrl = await uploadImage(productImage.path);
+    return { productImage: uploadedImageUrl };
+  });
+
+  const productImages = await Promise.all(productImagePromises);
+
+  // Add all new product images to the array in a single operation
+  webContent.productShowcase.push(...productImages);
+
+  // Save the updated WebContent to the database
+  await webContent.save();
+
+  // Send success response
+  res.status(200).json(ApiResponse(200,webContent.productShowcase,"Product Showcase images uploaded successfully",true));
+
+
 });
 
 
@@ -614,4 +656,5 @@ export {
   WebContentcreate,
   WebContentget,
   uploadImages,
+  productShowcaseimg
 };
