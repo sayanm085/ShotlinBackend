@@ -1,12 +1,12 @@
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
-import DiscountCoupon from '../models/DiscountCoupon.model.js';
+import Coupon from '../models/DiscountCoupon.model.js';
 
 
 const createCoupon = asyncHandler(async (req, res) => {
     // Code to create a new coupon
    const {code,discountType, discountValue,minimumPurchase, maximumDiscount,usageLimit,expiryDate} = req.body;
-    const coupon = await DiscountCoupon.create({
+    const coupon = await Coupon.create({
       code,
       discountType,
       discountValue,

@@ -1,10 +1,10 @@
-import Product from '../models/product.model.js';
-import User from "../models/user.model.js";
+import Product from '../models/Product.model.js';
+import User from '../models/User.model.js';
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import uploadImage from '../utils/cloudinary.js';
 import Review from '../models/Review.model.js';
-import order from '../models/order.model.js';
+import order from '../models/Order.model.js';
 import redisClient from '../db/Radis.db.js';
 import Fuse from 'fuse.js';
 
