@@ -11,13 +11,12 @@ import {
 
 
 const redisClient = redis.createClient({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  password: REDIS_PASSWORD,
   username: REDIS_USERNAME,
-  tls: {
-    rejectUnauthorized: false,
-  },
+  password: REDIS_PASSWORD,
+  socket: {
+      host: REDIS_HOST,
+      port: REDIS_PORT
+  }
 });
 
 

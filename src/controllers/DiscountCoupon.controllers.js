@@ -1,6 +1,6 @@
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
-import Coupon from '../models/DiscountCoupon.model.js';
+import Coupon from '../models/discountCoupon.model.js';
 
 
 const createCoupon = asyncHandler(async (req, res) => {

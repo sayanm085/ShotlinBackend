@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import User from "../models/User.model.js";
-import Admin from "../models/Admin.model.js";
+import User from "../models/user.model.js";
+import Admin from "../models/admin.model.js";
 import {ACCESS_TOKEN_SECRET} from "../constants.js";
 
 const verifyJWT = asyncHandler(async (req, res, next) => {

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {productUpload,productUpdate,productDelete,productLike,productReview,productReviewDelete,productSearch,productDetails} from "../controllers/ProductList.controllers.js";
+import {productUpload,productUpdate,productDelete,productLike,productReview,productReviewDelete,productSearch,productDetails} from "../controllers/productList.controllers.js";
 import upload from "../middlewares/multer.middleware.js";
 import {verifyJWT,verifyAdminJWT} from "../middlewares/auth.middleware.js";
 

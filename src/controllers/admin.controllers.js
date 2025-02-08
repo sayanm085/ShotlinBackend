@@ -1,6 +1,6 @@
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
-import Admin from "../models/Admin.model.js";
+import Admin from "../models/admin.model.js";
 
 
 

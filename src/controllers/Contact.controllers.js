@@ -1,4 +1,4 @@
-import Contact from '../models/Contact.model.js';
+import Contact from '../models/contact.model.js';
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import mailsend from "../utils/nodemailer.utils.js";
