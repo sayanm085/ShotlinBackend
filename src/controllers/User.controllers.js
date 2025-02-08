@@ -2,7 +2,7 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import crypto from 'crypto';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import uploadImage from '../utils/cloudinary.js';
-import User from '../models/user.model.js';
+import User from '../models/User.model.js';
 import jwt from 'jsonwebtoken';
 import mailsend from "../utils/nodemailer.utils.js";
 import {OTPtemplate,welcomeTemplate} from "../email template/email template.js";
