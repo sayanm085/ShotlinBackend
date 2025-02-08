@@ -1,4 +1,4 @@
-import WebContent  from '../models/webContent.model.js';
+import WebContent  from '../models/WebContent.model.js';
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import uploadImage from '../utils/cloudinary.js';
