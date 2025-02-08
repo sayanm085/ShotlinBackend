@@ -20,8 +20,8 @@ jobs:
 
       - name: Deploy Backend to Server
         run: |
-          echo "Deploying to server ${SERVER_IP}..."
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
+          echo "Deploying to server ${SHOTLIN_BACKEND}..."
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.SHOTLIN_BACKEND }} << 'EOF'
             echo "🔄 Switching to backend directory..."
             cd /var/www/ShotlinBackend || { echo "❌ Directory not found!"; exit 1; }
 
@@ -38,4 +38,4 @@ jobs:
             echo "✅ Backend deployment successful!"
           EOF
         env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}  # Ensure SERVER_IP is passed correctly here
+          SERVER_IP: ${{ secrets.SHOTLIN_BACKEND }}  # Ensure SERVER_IP is passed correctly here
