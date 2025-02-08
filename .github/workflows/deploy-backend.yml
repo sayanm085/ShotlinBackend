@@ -38,4 +38,4 @@ jobs:
             echo "✅ Backend deployment successful!"
           EOF
         env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}  # Use the server IP from GitHub Secrets
+          SERVER_IP: ${{ secrets.SERVER_IP }}   # Use the server IP from GitHub Secrets
