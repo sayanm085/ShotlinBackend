@@ -11,7 +11,7 @@ import {
   updateCallBookingContent,
   updateFAQsContent,
 
-} from "../controllers/webContent.controllers.js";
+} from "../controllers/WebContent.controllers.js";
 import upload from "../middlewares/multer.middleware.js";
 import { verifyAdminJWT } from "../middlewares/auth.middleware.js";
 
