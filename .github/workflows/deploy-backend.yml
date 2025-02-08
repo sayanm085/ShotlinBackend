@@ -16,10 +16,11 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_SHOTLIN_BACKEND }}  #Use SSH private key from GitHub Secrets
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_SHOTLIN_BACKEND }}  # Use SSH private key from GitHub Secrets
 
       - name: Deploy Backend to Server
         run: |
+          echo "Deploying to server ${SERVER_IP}..."
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
             echo "🔄 Switching to backend directory..."
             cd /var/www/ShotlinBackend || { echo "❌ Directory not found!"; exit 1; }
@@ -37,4 +38,4 @@ jobs:
             echo "✅ Backend deployment successful!"
           EOF
         env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}  # Use the server IP from GitHub Secrets
+          SERVER_IP: ${{ secrets.SERVER_IP }}  # Ensure SERVER_IP is passed correctly here
