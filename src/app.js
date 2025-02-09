@@ -24,7 +24,7 @@ app.use(cookieParser())
 
 app.get('/', (req, res) => {
 
-res.json({message: "Welcome to the API or CL/CD testing"});
+res.json({message: "Welcome to the API or CL/CD testing done"});
 
 });
 
