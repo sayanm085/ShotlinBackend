@@ -1,41 +1,28 @@
-name: Deploy Backend to Ubuntu Server
+name: Deploy to VPS
 
 on:
   push:
     branches:
-      - main  # Triggers deployment on every push to 'main'
+      - main  # Trigger deployment on push to main branch
 
 jobs:
-  deploy-backend:
-    runs-on: ubuntu-latest  # Runs on a fresh Ubuntu machine for each deployment
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Backend Code
-        uses: actions/checkout@v2  # Pulls the latest backend code
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_SHOTLIN_BACKEND }}  # Use SSH private key from GitHub Secrets
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy Backend to Server
+      - name: Deploy to VPS
         run: |
-          echo "Deploying to server ${SERVER_IP}..."
-          ssh -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
-            echo "🔄 Switching to backend directory..."
-            cd /var/www/ShotlinBackend || { echo "❌ Directory not found!"; exit 1; }
-
-            echo "🔄 Fetching latest changes..."
-            git reset --hard
-            git pull origin main || { echo "❌ Git pull failed"; exit 1; }
-
-            echo "📦 Installing dependencies..."
-            npm install --production
-
-            echo "🚀 Restarting backend service..."
-            pm2 restart index || pm2 start index.js --name index
-
-            echo "✅ Backend deployment successful!"
-          EOF
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}   # Use the server IP from GitHub Secrets
+          ssh -o StrictHostKeyChecking=no shotlin@159.89.169.204 "
+            cd /home/shotlin/ShotlinBackend &&
+            git pull &&
+            npm install &&
+            pm2 restart ShotlinBackend
+          "
