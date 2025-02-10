@@ -20,7 +20,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-              ssh -o StrictHostKeyChecking=no shotlin@159.89.169.204 "
+              ssh -o StrictHostKeyChecking=no shotlin@139.59.23.210 "
               cd /home/shotlin/ShotlinBackend &&
               git pull &&
               npm install &&
