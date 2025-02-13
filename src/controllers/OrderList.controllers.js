@@ -354,7 +354,50 @@ const getOrderById = asyncHandler(async (req, res) => {
 
 
 
+// Instant discount price calculation for order summary page
+
+const getDiscountPrice = asyncHandler(async (req, res) => {
+    const { ProductsPrice, DiscountCoupon } = req.body;
+    // const userId = req.user._id;
+
+    // check DiscountCoupon exist or not 
+    const couponExist = await Coupon.findOne({
+        code: DiscountCoupon,
+        isActive: true,
+        expiryDate: { $gt: Date.now() },
+    }).select('discountType discountValue minimumPurchase maximumDiscount usageLimit usageCount').lean();
+
+    if (!couponExist) {
+        res.status(404);
+        throw new Error('Coupon not found or not valid');
+    }
+
+    if (couponExist.minimumPurchase > ProductsPrice) {
+        res.status(400);
+        throw new Error('Coupon is not applicable for this order');
+    }
+
+    let discount =
+        couponExist.discountType === 'percentage'
+            ? Math.min((couponExist.discountValue / 100) * ProductsPrice, couponExist.maximumDiscount || Infinity) 
+            : couponExist.discountValue;
+
+    let discountAmount = ProductsPrice - discount;
+    console.log(discountAmount);
+
+    let gsttex = (discountAmount * 18) / 100; // gst calculation
+
+    console.log(gsttex);
+
+    let finalAmount = discountAmount + gsttex; // final amount after discount and gst
+
+  
+    
+    res.status(200).json(new ApiResponse(200, {ProductsPrice,discount ,gsttex,finalAmount}, 'Discount calculated successfully'));
+});
+
+
   
 
 
-export {createOrder,ordervarify, getOrders, getOrderById};
+export {createOrder,ordervarify, getOrders, getOrderById ,getDiscountPrice} ;
