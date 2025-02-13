@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { registerUser,loginUser,logoutUser , refreshAccessToken ,profileEdit,verifyEmail,resendotp,forgotPassword,currentuser } from "../controllers/User.controllers.js";
+import {addrescreate,useralladdress ,updateUserAddress,deleteUserAddress} from "../controllers/Address.controllers.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -17,6 +18,10 @@ router.route("/refresh-accessToken").get(refreshAccessToken)
 router.route("/profile").put(verifyJWT,upload.single("avatar"),profileEdit)
 router.route("/currentuser").get(verifyJWT,currentuser)
 
+router.route("/address").post(verifyJWT,addrescreate)
+router.route("/useraddress").get(verifyJWT,useralladdress)
+router.route("/updateaddress/:id").put(verifyJWT,updateUserAddress)
+router.route("/deleteaddress/:id").delete(verifyJWT,deleteUserAddress)
 
 
 

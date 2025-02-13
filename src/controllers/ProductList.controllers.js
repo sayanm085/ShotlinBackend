@@ -429,6 +429,7 @@ const productSearch = asyncHandler(async (req, res) => {
 
 const productDetails = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    console.log('Product retrieved successfully');
 
     try {
 

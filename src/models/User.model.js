@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import redisClient from "../db/Radis.db.js";
 import {
   REFRESH_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRY,
@@ -50,16 +50,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false
       },
-      shippingAddress: {
-        default: null,
-        type: String, // Refers to the address schema
+      shippingAddress: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address', // Reference to the Address model (assumed you have an Address schema)
         required: false
-      },
-      billingAddress: {
-        default: null,
-        type: String, // Refers to the address schema
-        required: false
-      },
+      }],
       orders: [{
         default: [],  // Default to an empty array
         type: mongoose.Schema.Types.ObjectId,
@@ -103,13 +98,29 @@ const userSchema = new mongoose.Schema({
 
 },{timestamps: true});
 
-userSchema.pre("save", async function (next){ // encrypt password before saving
-    if(this.isModified("password")){
-        this.password= await bcrypt.hash(this.password, 10);
-    }
-    next();
-} )
+// 🔥 Auto-remove Redis cache when a user's shipping address is updated
+userSchema.post("save", async function () {
+  if (this.isModified("shippingAddress")) {
+    await redisClient.del(`user:${this._id}:shippingAddress`);
+    console.log(`✅ Redis cache cleared for user ${this._id} due to address update`);
+  }
+});
 
+// 🔥 Auto-remove Redis cache when a user is deleted
+userSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    await redisClient.del(`user:${doc._id}:shippingAddress`);
+    console.log(`❌ Redis cache cleared for deleted user ${doc._id}`);
+  }
+});
+
+// 🔒 Encrypt password before saving
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
 // *user model main code end here
 
 
