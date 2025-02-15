@@ -40,11 +40,42 @@ const generateUsername = (displayName) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { varifyby, fullName, username, email, password, userdata } = req.body;
 
+  
+
 
   if (varifyby === 'email') {
     if (!fullName || !username || !email || !password) {
       return res.status(400).json(ApiResponse(400, null, "Missing required fields", false));
     }
+   
+
+
+// Check if the email is already verified
+const emailVerified =  await User.findOne({ email });
+if (emailVerified.isVerified===false) {
+  // If not verified, generate a new OTP
+
+  const newotp = generateOTP();
+  const otpExpires = getOTPExpiryTime();
+
+  // Update the user OTP directly in the database
+  const updateResult = await User.updateOne(
+    { email },
+    { $set: { otp: newotp, otpExpires } }
+  );
+
+  // Check if the user exists
+  if (updateResult.matchedCount === 0) {
+    return res
+      .status(404)
+      .json(ApiResponse(404, null, "User not found", false));
+  }
+  // Send the email asynchronously with the correct OTP value
+  mailsend(email, "Email Verification Code", OTPtemplate(newotp)).catch(console.error);
+
+  return res.status(200).json(ApiResponse(200, { email}, "Kindly check your email inbox", true));
+}
+
 
     // check if the user already exists
     if (await User.exists({ username })) {
