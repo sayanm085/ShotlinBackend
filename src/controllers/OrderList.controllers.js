@@ -8,6 +8,7 @@ import Coupon from '../models/DiscountCoupon.model.js';
 import crypto from 'crypto';
 import mailsend from "../utils/nodemailer.utils.js";
 import {RAZORPAY_KEY_ID,RAZORPAY_KEY_SECRET} from '../constants.js'
+import { console } from 'inspector';
 
 
 const razorpay = new Razorpay({
@@ -17,11 +18,12 @@ const razorpay = new Razorpay({
 
 
 const createOrder = asyncHandler(async (req, res) => {
-    const { products, DiscountCoupon, paymentType, shippingAddress } = req.body;
-    const userId = req.user._id;
-    
 
-    // Parallelize user and product validation
+  const { products, DiscountCoupon, paymentType, shippingAddress } = req.body;
+  const userId = req.user?._id; // Use optional chaining if req.user might not exist
+
+
+// Parallelize user and product validation
     const [userExist, productsExist] = await Promise.all([
         User.findById(userId).select('_id').lean(),
         Product.find({ _id: { $in: products.map(({ product }) => product) } })
@@ -98,9 +100,12 @@ const createOrder = asyncHandler(async (req, res) => {
     }
 
     // Create Razorpay order and database order in parallel
+    const GST_TEX = (finalAmount * 18) / 100; // GST calculation
+    const amountWithGST = finalAmount + GST_TEX; // Final amount after adding GST
+
     const [razorpayOrder, order] = await Promise.all([
         razorpay.orders.create({
-            amount: finalAmount * 100, // Convert to paise
+            amount: amountWithGST * 100, // Convert to paise
             currency: 'INR',
             receipt: `order_rcptid_${Date.now()}`,
             payment_capture: 0,
@@ -108,7 +113,7 @@ const createOrder = asyncHandler(async (req, res) => {
         Order.create({
             user: userId,
             products,
-            totalAmount:finalAmount,
+            totalAmount: amountWithGST,
             coupon: DiscountCoupon || null,
             paymentType,
             shippingAddress,
@@ -139,7 +144,14 @@ const ordervarify = asyncHandler(async (req, res) => {
 // Code to verify the order
 const {razorpay_payment_id, razorpay_order_id, razorpay_signature,orderId} = req.body;
 
+// const data ={
+//     razorpay_order_id: razorpay_order_id,
+//     razorpay_payment_id: razorpay_payment_id,
+//     razorpay_signature: razorpay_signature,
+//     orderId: orderId
+// }
 
+// res.status(200).json(new ApiResponse(200, data, 'Order verified successfully'));
 
 const order = await Order.findOne({orderId: orderId});
 if(!order) {
@@ -307,7 +319,7 @@ res.status(200).json(new ApiResponse(200, order, 'Order verified successfully' )
 </html>
 `;
 
-       await mailsend(user.email, 'Order Confirmation',html,);
+ await mailsend(user.email, 'Order Confirmation',html,);
 
 
 
@@ -360,6 +372,8 @@ const getDiscountPrice = asyncHandler(async (req, res) => {
     const { ProductsPrice, DiscountCoupon } = req.body;
     // const userId = req.user._id;
 
+    console.log(ProductsPrice, DiscountCoupon);
+
     // check DiscountCoupon exist or not 
     const couponExist = await Coupon.findOne({
         code: DiscountCoupon,
@@ -383,17 +397,28 @@ const getDiscountPrice = asyncHandler(async (req, res) => {
             : couponExist.discountValue;
 
     let discountAmount = ProductsPrice - discount;
-    console.log(discountAmount);
 
-    let gsttex = (discountAmount * 18) / 100; // gst calculation
+    let GST_TEX = (discountAmount * 18) / 100; // gst calculation
 
-    console.log(gsttex);
+    let finalAmount = discountAmount + GST_TEX; // final amount after discount and gst
 
-    let finalAmount = discountAmount + gsttex; // final amount after discount and gst
+    let discountPrice = {
+        discount: {
+            discountType : `${couponExist.discountType === 'flat' ? '₹' : ''}${couponExist.discountValue}${couponExist.discountType === 'percentage' ? '%' : ''} off discount`,
+
+            discountValue: discount,
+
+        },
+        GST_TEX:{
+            GST:"Taxes include 18% GST",
+            GSTAmount: GST_TEX
+        },
+        finalAmount: finalAmount
+    };
 
   
     
-    res.status(200).json(new ApiResponse(200, {ProductsPrice,discount ,gsttex,finalAmount}, 'Discount calculated successfully'));
+    res.status(200).json(new ApiResponse(200, discountPrice, 'Discount calculated successfully'));
 });
 
 

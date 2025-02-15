@@ -52,8 +52,7 @@ const userSchema = new mongoose.Schema({
       },
       shippingAddress: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Address', // Reference to the Address model (assumed you have an Address schema)
-        required: false
+        ref: 'Address'
       }],
       orders: [{
         default: [],  // Default to an empty array

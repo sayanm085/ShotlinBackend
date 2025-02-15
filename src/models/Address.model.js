@@ -7,31 +7,35 @@ const AddressSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    name: {
+    FullName: {
         type: String,
         required: true
     },
-    mobile: {
+    MobileNumber: {
         type: Number,
         required: true
     },
     CompanyName: {
         type: String,
     },
-    address: {
+    Address: {
         type: String,
         required: true
     },
-    city: {
+    City: {
         type: String,
         required: true
     },
-    state: {
+    State: {
         type: String,
         required: true
     },
-    pincode: {
+    Pincode: {
         type: Number,
+        required: true
+    },
+    Country :{
+        type: String,
         required: true
     },
     GSTIN:{

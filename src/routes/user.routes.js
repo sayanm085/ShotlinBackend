@@ -21,7 +21,7 @@ router.route("/currentuser").get(verifyJWT,currentuser)
 router.route("/address").post(verifyJWT,addrescreate)
 router.route("/useraddress").get(verifyJWT,useralladdress)
 router.route("/updateaddress/:id").put(verifyJWT,updateUserAddress)
-router.route("/deleteaddress/:id").delete(verifyJWT,deleteUserAddress)
+router.route("/deleteaddress/:addressId").delete(verifyJWT,deleteUserAddress)
 
 
 

@@ -49,8 +49,8 @@ const orderSchema = new mongoose.Schema({
     },
     paymentType: {
       type: String,
-      default: 'Cash on Delivery',
-      enum: ['Cash on Delivery', 'Card Payment', 'UPI Payment']
+      default: 'razorpay',
+      enum: ['Cash on Delivery', 'Card Payment', 'UPI Payment' , 'Net Banking', 'razorpay' ,'Bank Transfer']
 
     },
     paidAt: {
@@ -62,9 +62,12 @@ const orderSchema = new mongoose.Schema({
       enum: ['Pending', 'Processing', 'Delivered', 'Cancelled']
     },
     shippingAddress: {
-      type: String,
-      required: true
-    },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+    }
+
+
+    ,
     orderId: {
       type: String
     },
