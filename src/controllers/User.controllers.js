@@ -403,6 +403,35 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 
+const profileData = asyncHandler(async (req, res) => {
+  // get the user id from the request object
+  const userid = req.user._id;
+  // find the user with the id
+  const user = await User.findById(userid);
+  // check if the user exists
+  if (!user) {
+    return res.status(404).json(ApiResponse(404, null, "User not found", false));
+  }
+
+  // Prepare the response object with only the necessary fields
+  const userResponse = {
+    username: user.username,
+    email: user.email,
+    fullName: user.fullName,
+    avatar: user.avatar,
+    phone: user.phone,
+    gender: user.gender,
+    DOB: user.DOB,
+    createdAt: user.createdAt ? user.createdAt.toISOString().split('T')[0] : null,
+  };
+
+  // send a success response
+  res.status(200).json(ApiResponse(200, userResponse, "User found", true));
+
+
+});
+
+
 const profileEdit= asyncHandler(async (req, res) => {
 
   const { fullName, username } = req.body;
@@ -474,4 +503,4 @@ const currentuser = asyncHandler(async (req, res) => {
 
 
 
-export {registerUser,loginUser,logoutUser , refreshAccessToken,profileEdit, verifyEmail,resendotp,forgotPassword,currentuser };
+export {registerUser,loginUser,logoutUser , refreshAccessToken,profileData,profileEdit, verifyEmail,resendotp,forgotPassword,currentuser };

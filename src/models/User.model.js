@@ -37,6 +37,15 @@ const userSchema = new mongoose.Schema({
         trim: true,
         index: true,
       },
+      gender: {
+        type: String,
+        required: false,
+        enum: ["male", "female", "other"]
+      },
+      DOB: {
+        type: Date,
+        required: false
+      },
       avatar: {
         default: null || "https://www.gravatar.com/avatar/",
         type: String, // URL to avatar image
