@@ -69,7 +69,8 @@ const addrescreate = asyncHandler(async (req, res) => {
 // Update an address identified by the addressId in the request
 const updateUserAddress = asyncHandler(async (req, res) => {
     const userId = req.user._id.toString();
-    const { addressId, newAddress } = req.body;
+    const { addressId} = req.params;
+    const { newAddress } = req.body;
 
     try {
         // ✅ Find the user first
@@ -83,7 +84,7 @@ const updateUserAddress = asyncHandler(async (req, res) => {
         if (!address) {
             return res.status(404).json(new ApiResponse(404, null, "Address not found"));
         }
-
+              
         // ✅ Update the address properly
         await Address.findByIdAndUpdate(addressId, { $set: newAddress }, { new: true });
 

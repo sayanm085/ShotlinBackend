@@ -57,7 +57,8 @@ const userSchema = new mongoose.Schema({
       phone: {
         default: null,
         type: String,
-        required: false
+        required: false,
+        varify: false
       },
       shippingAddress: [{
         type: mongoose.Schema.Types.ObjectId,
