@@ -36,3 +36,18 @@ if (cluster.isMaster) {
             process.exit(1); // Exit process if the database connection fails
         });
 }
+
+
+
+// // Worker process: connect to the database and start the server
+// connectDB()
+//     .then(() => {
+//         const port = PORT || 8000;
+//         app.listen(port, () => {
+//             console.log(`Server running on http://localhost:${port}`);
+//         });
+//     })
+//     .catch((error) => {
+//         console.error("Database connection failed:", error);
+//         process.exit(1); // Exit process if the database connection fails
+//     });

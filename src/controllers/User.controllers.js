@@ -51,31 +51,29 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
 // Check if the email is already verified
-const emailVerified =  await User.findOne({ email });
-if (emailVerified.isVerified===false) {
-  // If not verified, generate a new OTP
+  const existingUser = await User.findOne({ email });
+if (existingUser) {
+  if (!existingUser.isVerified) {
+    // Generate a new OTP for an unverified user
+    const newotp = generateOTP();
+    const otpExpires = getOTPExpiryTime();
 
-  const newotp = generateOTP();
-  const otpExpires = getOTPExpiryTime();
+    const updateResult = await User.updateOne(
+      { email },
+      { $set: { otp: newotp, otpExpires } }
+    );
 
-  // Update the user OTP directly in the database
-  const updateResult = await User.updateOne(
-    { email },
-    { $set: { otp: newotp, otpExpires } }
-  );
-
-  // Check if the user exists
-  if (updateResult.matchedCount === 0) {
-    return res
-      .status(404)
-      .json(ApiResponse(404, null, "User not found", false));
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json(ApiResponse(404, null, "User not found", false));
+    }
+    
+    mailsend(email, "Email Verification Code", OTPtemplate(newotp)).catch(console.error);
+    return res.status(200).json(ApiResponse(200, { email }, "Kindly check your email inbox", true));
+  } else {
+    // Email already exists and is verified
+    return res.status(400).json(ApiResponse(400, null, "Email is already in use", false));
   }
-  // Send the email asynchronously with the correct OTP value
-  mailsend(email, "Email Verification Code", OTPtemplate(newotp)).catch(console.error);
-
-  return res.status(200).json(ApiResponse(200, { email}, "Kindly check your email inbox", true));
 }
-
 
     // check if the user already exists
     if (await User.exists({ username })) {
