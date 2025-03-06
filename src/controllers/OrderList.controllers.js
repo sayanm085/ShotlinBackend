@@ -333,20 +333,61 @@ res.status(200).json(new ApiResponse(200, order, 'Order verified successfully' )
 // Get all orders for user only
 const getOrders = asyncHandler(async (req, res) => {
     const userId = req.user._id;
+    const { page = 1, limit = 6, filter } = req.query;
   
-    // 🔥 Fetch orders directly without extra user query
-    const orders = await Order.find({ user: userId })
-      .select("-sensitiveField") // Exclude sensitive fields if needed
-      .lean();
+    // Build the query: by default, fetch orders of the logged in user
+    let query = { user: userId };
   
-    if (!orders.length) {
+    // Additional filtering based on provided filter option
+    if (filter) {
+      switch (filter) {
+        case 'lastThreeMonths': {
+          // Filter orders from the last three months using 'orderedAt'
+          const threeMonthsAgo = new Date();
+          threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+          query.orderedAt = { $gte: threeMonthsAgo };
+          break;
+        }
+        case 'returnedProducts': {
+          // Assuming returned products are represented by a specific orderStatus (update as needed)
+          // For example, if returned products are marked as 'Cancelled', adjust accordingly:
+          query.orderStatus = 'Cancelled';
+          break;
+        }
+        case 'lastYearDelivered': {
+          // Filter for orders delivered last year
+          const currentYear = new Date().getFullYear();
+          const startOfLastYear = new Date(currentYear - 1, 0, 1);
+          const endOfLastYear = new Date(currentYear - 1, 11, 31);
+          query.orderedAt = { $gte: startOfLastYear, $lte: endOfLastYear };
+          query.orderStatus = 'Delivered'; // ensure only delivered orders are returned
+          break;
+        }
+        // Add other filter cases as needed
+        default:
+          break;
+      }
+    }
+  
+    // Set pagination options, sort orders in descending order by 'orderedAt',
+    // exclude any sensitive fields, and use lean for performance.
+    const options = {
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+      sort: { orderedAt: -1 },
+      lean: true,
+      select: '-sensitiveField'
+    };
+  
+    // Using the paginate method provided by mongoose-paginate-v2
+    const orders = await Order.paginate(query, options);
+  
+    if (!orders.docs.length) {
       return res.status(404).json(new ApiResponse(404, [], 'No orders found'));
     }
   
-    // ✅ Send response immediately
     res.status(200).json(new ApiResponse(200, orders, 'Orders fetched successfully'));
-});
-  
+  });
 
 // Get order by id for user only  
 const getOrderById = asyncHandler(async (req, res) => {
