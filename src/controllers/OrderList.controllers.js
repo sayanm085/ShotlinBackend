@@ -349,8 +349,7 @@ const getOrders = asyncHandler(async (req, res) => {
           break;
         }
         case 'returnedProducts': {
-          // Assuming returned products are represented by a specific orderStatus (update as needed)
-          // For example, if returned products are marked as 'Cancelled', adjust accordingly:
+          // Assuming returned products are represented by 'Cancelled' status
           query.orderStatus = 'Cancelled';
           break;
         }
@@ -370,13 +369,17 @@ const getOrders = asyncHandler(async (req, res) => {
     }
   
     // Set pagination options, sort orders in descending order by 'orderedAt',
-    // exclude any sensitive fields, and use lean for performance.
+    // exclude any sensitive fields, use lean for performance, and populate product details.
     const options = {
       page: parseInt(page, 10),
       limit: parseInt(limit, 10),
       sort: { orderedAt: -1 },
       lean: true,
-      select: '-sensitiveField'
+      select: '-sensitiveField',
+      populate: {
+        path: 'products.product',
+        select: 'image title name'
+      }
     };
   
     // Using the paginate method provided by mongoose-paginate-v2
