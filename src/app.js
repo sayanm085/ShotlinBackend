@@ -49,8 +49,6 @@ app.get("/api/get-cookie", (req, res) => {
 import userRoutes from './routes/user.routes.js';
 import WebContent from './routes/webContent.routes.js';
 import product  from './routes/product.routes.js';
-import orders from './routes/order.routes.js';
-import discountcoupon from './routes/discountCoupon.routes.js';
 import Contact from './routes/contact.routes.js';
 import admin from './routes/admin.routes.js';
 
@@ -59,8 +57,6 @@ import admin from './routes/admin.routes.js';
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/content', WebContent);
 app.use('/api/v1/products', product);
-app.use('/api/v1/orders', orders);
-app.use('/api/v1/discountcoupon', discountcoupon);
 app.use('/api/v1/contact', Contact);
 
 //Admin Routes

@@ -56,18 +56,13 @@ const userSchema = new mongoose.Schema({
       },
       phone: {
         default: null,
-        type: String,
+        type: Number,
         required: false,
         varify: false
       },
       shippingAddress: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
-      }],
-      orders: [{
-        default: [],  // Default to an empty array
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order' // Reference to the Order model (assumed you have an Order schema)
       }],
       wishlist: [{
         default: [],  // Default to an empty array

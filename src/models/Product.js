@@ -10,11 +10,8 @@ const productSchema = new mongoose.Schema({
   features: [{ type: String }],
   image: [{ type: String, required: true }],
   livePreview: { type: String, default: null },
-  price: { type: Number, required: true, min: 0 },
   category: { type: String, default: "Other" },
   tags: [{ type: String }],
-  stock: { type: Number, default: 1 },
-
   likeSummary: {
     count: { type: Number, default: 0 },
     likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

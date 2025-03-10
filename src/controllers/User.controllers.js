@@ -7,7 +7,6 @@ import jwt from 'jsonwebtoken';
 import mailsend from "../utils/nodemailer.utils.js";
 import {OTPtemplate,welcomeTemplate} from "../email template/email template.js";
 import admin from '../utils/firebaseAdmin.js';
-import { create } from 'domain';
 
 // Utility function for setting cookies
 const setAuthCookies = (res, accessToken, refreshToken) => {

@@ -4,7 +4,6 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import uploadImage from "../utils/cloudinary.js";
 import Review from "../models/Review.model.js";
-import order from "../models/Order.model.js";
 import redisClient from "../db/Radis.db.js";
 import Fuse from "fuse.js";
 
@@ -13,7 +12,7 @@ import Fuse from "fuse.js";
 // add product to database and upload images to cloudinary  
 
 const productUpload = asyncHandler(async (req, res) => {
-    const { name, title, description, details, features, livePreview, price, category, tags, stock } = req.body;
+    const { name, title, description, details, features, livePreview,category, tags } = req.body;
 
     // Ensure files are uploaded
     if (!req.files || !req.files.productImage) {
@@ -44,7 +43,7 @@ const productUpload = asyncHandler(async (req, res) => {
 
     try {
 
-        if(!name || !title || !description || !details || !features || !price || !category || !tags){
+        if(!name || !title || !description || !details || !features || !category || !tags){
             return res.status(400).json(new ApiResponse(400, 'All fields are required'));
         }
         // Save product to the database
@@ -55,10 +54,8 @@ const productUpload = asyncHandler(async (req, res) => {
             details,
             features,
             livePreview,
-            price,
             category,
             tags,
-            stock,
             image,
         });
 
@@ -75,7 +72,7 @@ const productUpload = asyncHandler(async (req, res) => {
 // update product in database 
 const productUpdate = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, title, description, details, features, livePreview, price, category, tags, stock } = req.body;
+    const { name, title, description, details, features, livePreview, category, tags } = req.body;
 
     try {
         const product = await Product.findById(id);
@@ -116,10 +113,8 @@ const productUpdate = asyncHandler(async (req, res) => {
         product.details = details || product.details;
         product.features = features || product.features;
         product.livePreview = livePreview || product.livePreview;
-        product.price = price || product.price;
         product.category = category || product.category;
         product.tags = tags || product.tags;
-        product.stock = stock || product.stock;
 
         await product.save();
 
@@ -390,10 +385,8 @@ const productSearch = asyncHandler(async (req, res) => {
             id: product._id,
             name: product.name,
             title: product.title,
-            price: product.price,
             category: product.category,
             tags: product.tags,
-            stock: product.stock,
             image: product.image,
             reviewavg: product.reviewavg,
         }));
@@ -444,7 +437,7 @@ const productDetails = asyncHandler(async (req, res) => {
 
         // Fetch the product from the database if not cached 
         const product = await Product.findById(id)
-            .select("name title description details features livePreview price category tags stock image reviewavg reviewcount likeSummary reviewIds")
+            .select("name title description details features livePreview category tags  image reviewavg reviewcount likeSummary reviewIds")
             .populate({ path: 'reviewIds', select: 'rating comment imageUrls userId', populate: { path: 'userId', select: 'fullName' }})
             .lean();
 
