@@ -1,9 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import crypto from 'crypto';
-
-
+import { createZoomMeeting } from "./utils/zoomService.js";
+import mailsend from "./utils/nodemailer.utils.js";
 // Create the Express app
 let app = express();
 
@@ -27,6 +26,32 @@ app.get('/', (req, res) => {
 res.json({message: "Welcome to the API or CL/CD testing done"});
 
 });
+
+app.post("/schedule-call", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ message: "Email is required" });
+  
+      const meetingLink = await createZoomMeeting(email);
+      
+        await mailsend(email, "Meeting Scheduled", `Your meeting has been scheduled. Click the link to join the meeting: ${meetingLink || "No link found"}`);
+  
+      res.status(200).json({ message: "Meeting scheduled!", meetingLink });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
 
 // POST route to set the cookie
 app.post('/api/set-cookie', (req, res) => {

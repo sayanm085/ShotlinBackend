@@ -21,6 +21,11 @@ const SMTP_USERNAME = process.env.SMTP_USERNAME;
 const EMAIL_FROM = process.env.EMAIL_FROM;
 const SMTP_HOST = process.env.SMTP_HOST;
 const SMTP_PORT = process.env.SMTP_PORT;
+// Zoom API Configuration
+const ZOOM_ACCOUNT_ID=process.env.ZOOM_ACCOUNT_ID
+const ZOOM_CLIENT_ID=process.env.ZOOM_CLIENT_ID
+const ZOOM_CLIENT_SECRET=process.env.ZOOM_CLIENT_SECRET
+
 
 // radis Configuration for caching
 const REDIS_USERNAME= process.env.REDIS_USERNAME;
@@ -48,6 +53,12 @@ export {
   EMAIL_FROM,
   SMTP_HOST,
   SMTP_PORT,
+
+  ZOOM_ACCOUNT_ID,
+  ZOOM_CLIENT_ID,
+  ZOOM_CLIENT_SECRET,
+
+  
     REDIS_USERNAME,
     REDIS_PASSWORD,
     REDIS_HOST,
