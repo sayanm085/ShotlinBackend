@@ -217,4 +217,161 @@ const welcomeTemplate = (fullName) => {
 `;
 };
 
-export { OTPtemplate, welcomeTemplate };
+const meetingScheduleTemplate = (meetingDate, meetingTime, meetingLink) => {
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Meeting Confirmation</title>
+  <style type="text/css">
+    /* Basic Reset & Global Settings */
+    body, table, td, a {
+      margin: 0;
+      padding: 0;
+      text-decoration: none;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    img {
+      border: 0;
+      outline: none;
+      text-decoration: none;
+    }
+    body {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0;
+      padding: 20px 0;
+      /* Subtle gradient background (fallback to a solid color if gradient not supported) */
+      background: #f2f5f9;
+      background: linear-gradient(180deg, #eaeef3 0%, #f2f5f9 100%);
+    }
+
+    /* Container holding the card */
+    .email-wrapper {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Card styling */
+    .email-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      padding: 30px 25px;
+      text-align: center;
+    }
+
+    /* Logo or Icon */
+    .email-logo {
+      margin-bottom: 15px;
+    }
+    .email-logo img {
+      max-width: 50px;
+      height: auto;
+    }
+
+    /* Heading */
+    h1 {
+      font-size: 24px;
+      margin: 10px 0 20px;
+      color: #333333;
+    }
+
+    /* Paragraph & Body Text */
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 10px 0;
+      color: #555555;
+    }
+
+    /* Highlighted text (date/time) */
+    .highlight {
+      font-weight: bold;
+      color: #222222;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      display: inline-block;
+      margin: 25px auto 0;
+      padding: 14px 30px;
+      background-color: #0073e6;
+      color: #ffffff !important;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: #005bb5;
+    }
+
+    /* Footer */
+    .email-footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #999999;
+    }
+    .email-footer a {
+      color: #999999;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <table class="email-wrapper" cellspacing="0" cellpadding="0" border="0" align="center">
+    <tr>
+      <td>
+        <!-- Card -->
+        <div class="email-card">
+          <!-- Logo / Icon (Optional) -->
+          <div class="email-logo">
+            <!-- Replace the image source with your own logo or icon -->
+            <img src="https://cdn-icons-png.flaticon.com/512/1162/1162531.png" alt="Meeting Logo">
+          </div>
+
+          <!-- Title -->
+          <h1>Meeting Confirmation</h1>
+
+          <!-- Message Body -->
+          <p>
+            Your meeting has been scheduled successfully for 
+            <span class="highlight">${meetingDate}</span> 
+            at 
+            <span class="highlight">${meetingTime}</span>.
+          </p>
+
+          <p>Please click the button below to join the meeting:</p>
+
+          <!-- CTA Button -->
+          <a href="${meetingLink}" class="cta-button">Join Meeting</a>
+
+          <!-- Additional Info -->
+          <p style="margin-top: 30px; font-size:14px; color:#777777;">
+            If you have any questions or need assistance, please 
+            <a href="https://shotlin.com/contact" style="color:#0073e6;">contact us</a>.
+          </p>
+        </div>
+        <!-- End Card -->
+
+        <!-- Footer -->
+        <div class="email-footer">
+          <p>All rights reserved by Shotlin © 2025</p>
+          <p>Email: support@shotlin.in &nbsp;|&nbsp; Contact Number: +91 9382214304</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+};
+
+
+export { OTPtemplate, welcomeTemplate,meetingScheduleTemplate };
