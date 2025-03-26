@@ -65,7 +65,6 @@ const userSchema = new mongoose.Schema({
         ref: 'Address'
       }],
       wishlist: [{
-        default: [],  // Default to an empty array
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product' // Reference to the Product model (assumed you have a Product schema)
       }],
@@ -83,19 +82,11 @@ const userSchema = new mongoose.Schema({
         default: false
       },
 
-      // cart: [{
-      //   productId: {
-      //     type: Schema.Types.ObjectId,
-      //     ref: 'Product', // Reference to a Product model
-      //     required: true
-      //   },
-      //   quantity: {
-      //     default: 0,
-      //     type: Number,
-      //     required: true,
-      //     min: 1
-      //   }
-      // }],
+      MeetingSchedule: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MeetingSchedule'
+      }],
+
       refreshToken: {
         type: String,
       },

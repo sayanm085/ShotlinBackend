@@ -5,79 +5,78 @@ import mailsend from "../utils/nodemailer.utils.js";
 import MeetingSchedule from "../models/MeetingSchedule.model.js";
 import DailySchedule from "../models/DailySchedule.model.js";
 import redisClient from "../db/Radis.db.js";
+import User from "../models/User.model.js";
 
 import {meetingScheduleTemplate} from "../email template/email template.js";
 
-const createMeetingSchedule = async (req, res) => {
-    const { dateid, timeSlotid, email,phone,serviceName,description } = req.body;
-    
+const createMeetingSchedule = asyncHandler(async (req, res) => {
+  const { dateid, timeSlotid, email, phone, serviceName, description } = req.body;
+  const userId = req.user._id;
 
-    const userId = req.user._id;
+  // Retrieve the daily schedule for the given date.
+  const dailySchedule = await DailySchedule.findById(dateid);
+  if (!dailySchedule) {
+    return res.status(404).json(new ApiResponse(404, "Daily Schedule not found", "failed"));
+  }
 
-    // Check if a daily schedule exists for the given date
-    const dailySchedule = await DailySchedule.findById(dateid);
-    if (!dailySchedule) {
-        return res.status(404).json(new ApiResponse(404, "Daily Schedule not found" ,"failed"));
-    }
+  // Retrieve the specified time slot.
+  const timeSlot = dailySchedule.timeSlots.id(timeSlotid);
+  if (!timeSlot) {
+    return res.status(404).json(new ApiResponse(404, "Time Slot not found", "failed"));
+  }
 
-    // Check if the time slot is available for booking
-    const timeSlot = dailySchedule.timeSlots.id(timeSlotid);
-    if (!timeSlot) {
-        return res.status(404).json(new ApiResponse(404, "Time Slot not found","failed"));
-    }
+  // Check if the user already has a meeting booked for this date.
+  const existingMeeting = await MeetingSchedule.findOne({
+    userId,
+    meetingDate: dailySchedule.date
+  });
+  if (existingMeeting) {
+    return res.status(400).json(new ApiResponse(400, "Meeting already exists for this date", "failed"));
+  }
 
-   // Check if the user has already booked a meeting for the given date 
-    const existingMeeting = await MeetingSchedule.findOne({ userId, meetingDate: dailySchedule.date });
-    if (existingMeeting) {
-        return res.status(400).json(new ApiResponse(400, "Meeting already exists for this date","failed"));
-    }
+  // Ensure the time slot is available for booking.
+  if (timeSlot.status === "full") {
+    return res.status(400).json(new ApiResponse(400, "Time Slot is already full", "failed"));
+  }
 
-    // Check if the time slot is available for booking
-    if (timeSlot.status === "full") {
-        return res.status(400).json(new ApiResponse(400, "Time Slot is already full","failed"));
-    }
+  // Create a new Zoom meeting.
+  const meetingLink = await createZoomMeeting(serviceName, dailySchedule.date, timeSlot.startTime);
 
-    // Create a new Zoom meeting 
-    const meetingLink = await createZoomMeeting(serviceName, dailySchedule.date, timeSlot.startTime);
-    // const meetingLink ="https://us05web.zoom.us/j/89194651313?pwd=zWkJ6zeFmUbK1Za0aBcZcH4HTcTY1u.1"
+  // Create the new meeting schedule document.
+  const newMeeting = await MeetingSchedule.create({
+    userId,
+    email,
+    phone,
+    meetingLink,
+    serviceName,
+    meetingDate: dailySchedule.date,
+    meetingTime: timeSlot.startTime,
+    description
+  });
 
-    // Create and save the new meeting schedule
-    const newMeeting = await MeetingSchedule.create({
-        userId,
-        email,
-        phone,
-        meetingLink,
-        serviceName,
-        meetingDate: dailySchedule.date,
-        meetingTime: timeSlot.startTime,
-        description
-    });
+  // Update the time slot's booking count and status if necessary.
+  timeSlot.currentBookings += 1;
+  if (timeSlot.currentBookings >= timeSlot.maxBookings) {
+    timeSlot.status = "full";
+  }
+  await dailySchedule.save();
 
-    // Update the time slot with the new booking
-    timeSlot.currentBookings += 1;
-    
-    await dailySchedule.save();
+  // Atomically update the user's MeetingSchedule array.
+  await User.findByIdAndUpdate(userId, { $push: { MeetingSchedule: newMeeting._id } });
 
-   
-    res.status(201).json(new ApiResponse(201, "Meeting scheduled successfully", "success"));
+  // Respond immediately to the client.
+  res.status(201).json(new ApiResponse(201, "Meeting scheduled successfully", "success"));
 
-     // Send a confirmation email to the user
-    try {
-      await mailsend(
-        email,
-        "Meeting Schedule Confirmation",
-        meetingScheduleTemplate(
-          dailySchedule.date,
-          timeSlot.startTime,
-          meetingLink
-        )
-      );
-      console.log("Email sent successfully.");
-    } catch (error) {
-      console.error("Error sending email:", error);
-    }
-       
-};
+  // Asynchronously send a confirmation email.
+  mailsend(
+    email,
+    "Meeting Schedule Confirmation",
+    meetingScheduleTemplate(dailySchedule.date, timeSlot.startTime, meetingLink)
+  )
+    .then(() => console.log("Email sent successfully."))
+    .catch((error) => console.error("Error sending email:", error));
+});
+
 
 // Create a new Daily Schedule and update Redis cache
 const createDailySchedule = asyncHandler(async (req, res) => {
