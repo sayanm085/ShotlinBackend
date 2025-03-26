@@ -27,6 +27,7 @@ const mailsend = async (to, subject, html) => {
 
     try {
         const result = await transporter.sendMail(mailOptions);
+        console.log(result);
         return result.messageId;
     } catch (error) {
         return error;

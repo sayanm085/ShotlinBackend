@@ -91,7 +91,7 @@ if (existingUser) {
     await user.save();
 
     // Send OTP email asynchronously (non-blocking)
-    mailsend(user.email, "Email Verification Code", OTPtemplate(otp)).then((res)=> console.log("OTP send complete:" + res )).catch(console.error);
+    mailsend(user.email, "Email Verification Code", OTPtemplate(otp)).catch(console.error);
 
     console.log("✅ OTP sent to the user email");
 
