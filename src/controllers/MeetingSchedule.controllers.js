@@ -74,7 +74,7 @@ const createMeetingSchedule = asyncHandler(async (req, res) => {
     "Meeting Schedule Confirmation",
     meetingScheduleTemplate(dailySchedule.date, timeSlot.startTime, meetingLink)
   )
-    .then(() => console.log("Email sent successfully."))
+    .then((res) => console.log("Email sent successfully." + res))
     .catch((error) => console.error("Error sending email:", error));
 });
 
