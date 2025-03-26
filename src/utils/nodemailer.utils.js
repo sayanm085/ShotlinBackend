@@ -8,18 +8,19 @@ import {  SMTP_PASSWORD,
 const mailsend = async (to, subject, html) => {
 
     const transporter = nodemailer.createTransport({
-        service: 'Zoho Mail',
+        service: 'gmail',
         port: SMTP_PORT,               // true for 465, false for other ports
         host: SMTP_HOST,
         secure: true, // true for 465, false for other ports
         auth: {
-            user: SMTP_USERNAME,
-            pass: SMTP_PASSWORD
+            user: "shotlin085@gmail.com",
+            pass:"frwwjsgyyrmassbk"
+
         }
     });
 
     const mailOptions = {
-        from: EMAIL_FROM,
+        from:"shotlin085@gmail.com",
         to: to,
         subject: subject,
         html: html
