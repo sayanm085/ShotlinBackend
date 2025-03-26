@@ -61,9 +61,10 @@ const createZoomMeeting = async (serviceName,date,time) => {
     );
     
     // Return the Zoom meeting link (join URL)
+    console.log("response.data",response.data);
     return response.data.join_url;
   } catch (error) {
-    console.error("Error creating Zoom meeting:", error.response ? error.response.data : error);
+    console.log("Error creating Zoom meeting:", error.response ? error.response.data : error);
     throw new Error("Failed to create Zoom meeting");
   }
 };

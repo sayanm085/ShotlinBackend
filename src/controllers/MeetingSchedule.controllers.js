@@ -155,4 +155,12 @@ const getMeetingSchedule = async (req, res) => {
 };
 
 
-export { createMeetingSchedule , createDailySchedule , getMeetingSchedule,getRealtimeDailySchedule  };
+const createZoomMeetings = asyncHandler(async (req, res) => { 
+  const { serviceName, date, time } = req.body;
+  const meetingLink = await createZoomMeeting(serviceName, date, time);
+
+  res.status(200).json(new ApiResponse(200, "Zoom meeting created successfully", meetingLink));
+});
+
+
+export { createMeetingSchedule , createDailySchedule , getMeetingSchedule,getRealtimeDailySchedule,createZoomMeetings  };
