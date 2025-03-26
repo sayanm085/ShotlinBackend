@@ -40,7 +40,8 @@ const createMeetingSchedule = asyncHandler(async (req, res) => {
   }
 
   // Create a new Zoom meeting.
-  const meetingLink = await createZoomMeeting(serviceName, dailySchedule.date, timeSlot.startTime);
+  // const meetingLink = await createZoomMeeting(serviceName, dailySchedule.date, timeSlot.startTime);
+  const meetingLink = 'https://us05web.zoom.us/j/89194651313?pwd=zWkJ6zeFmUbK1Za0aBcZcH4HTcTY1u.1';
 
   // Create the new meeting schedule document.
   const newMeeting = await MeetingSchedule.create({
