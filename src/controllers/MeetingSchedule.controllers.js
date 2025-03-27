@@ -40,8 +40,7 @@ const createMeetingSchedule = asyncHandler(async (req, res) => {
   }
 
   // Create a new Zoom meeting.
-  // const meetingLink = await createZoomMeeting(serviceName, dailySchedule.date, timeSlot.startTime);
-  const meetingLink = 'https://us05web.zoom.us/j/89194651313?pwd=zWkJ6zeFmUbK1Za0aBcZcH4HTcTY1u.1';
+  const meetingLink = await createZoomMeeting(serviceName, dailySchedule.date, timeSlot.startTime);
 
   // Create the new meeting schedule document.
   const newMeeting = await MeetingSchedule.create({
@@ -74,7 +73,7 @@ const createMeetingSchedule = asyncHandler(async (req, res) => {
     "Meeting Schedule Confirmation",
     meetingScheduleTemplate(dailySchedule.date, timeSlot.startTime, meetingLink)
   )
-    .then((res) => console.log("Email sent successfully." + res))
+    .then((res) => console.log("Email sent successfully."))
     .catch((error) => console.error("Error sending email:", error));
 });
 

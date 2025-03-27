@@ -9,8 +9,8 @@ const mailsend = async (to, subject, html) => {
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
-        port: SMTP_PORT,               // true for 465, false for other ports
-        host: SMTP_HOST,
+        port: 465,               // true for 465, false for other ports
+        host: "smtp.gmail.com",
         secure: true, // true for 465, false for other ports
         auth: {
             user: "shotlin085@gmail.com",
