@@ -22,9 +22,9 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh shotlin@128.199.102.244 << 'EOF'
-            cd /home/shotlin/ShotlinBackend
-            git pull origin main
-            npm install
-            pm2 restart all
-          EOF
+              ssh -o StrictHostKeyChecking=no shotlin@128.199.102.244 "
+              cd /home/shotlin/ShotlinBackend &&
+              git pull &&
+              npm install &&
+              pm2 restart 0
+              "
