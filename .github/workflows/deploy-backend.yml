@@ -1,28 +1,30 @@
-name: Deploy to VPS
+name: Deploy Backend
 
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to main branch
+      - main  # or your branch name
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H your-server-ip >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
         run: |
-              ssh -o StrictHostKeyChecking=no shotlin@128.199.102.244 "
-              cd /home/shotlin/ShotlinBackend &&
-              git pull &&
-              npm install &&
-              pm2 restart 0
-              "
+          ssh shotlin@128.199.102.244 << 'EOF'
+            cd /home/shotlin/ShotlinBackend
+            git pull origin main
+            npm install
+            pm2 restart all
+          EOF
