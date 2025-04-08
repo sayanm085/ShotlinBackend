@@ -1,39 +1,46 @@
-import nodemailer from 'nodemailer';
+import { SendMailClient } from "zeptomail";
+import {
+  ZEPTOMAIL_URL,      // e.g., "https://api.zeptomail.in"
+  ZEPTOMAIL_TOKEN,    // Your secure Zoho encoded token
+  EMAIL_FROM,         // e.g., "noreply@yourdomain.com"
+  EMAIL_FROM_NAME     // e.g., "Your App Name"
+} from "../constants.js";
 
-import {  SMTP_PASSWORD,
-    SMTP_USERNAME,
-    EMAIL_FROM,
-    SMTP_HOST,
-    SMTP_PORT} from '../constants.js'
-const mailsend = async (to, subject, html) => {
+// Initialize ZeptoMail client with production configuration
+const client = new SendMailClient({
+  url: ZEPTOMAIL_URL,
+  token: ZEPTOMAIL_TOKEN,
+});
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        port: 465,               // true for 465, false for other ports
-        host: "smtp.gmail.com",
-        secure: true, // true for 465, false for other ports
-        auth: {
-            user: "shotlin085@gmail.com",
-            pass:"frwwjsgyyrmassbk"
+const sendMail = async (to, subject, html) => {
+  // Extract the part before "@" to use as the recipient's name
+  const recipientName = to.split("@")[0];
 
+  const emailData = {
+    from: {
+      address: EMAIL_FROM,
+      name: EMAIL_FROM_NAME,
+    },
+    to: [
+      {
+        email_address: {
+          address: to,
+          name: recipientName,
         }
-    });
+      }
+    ],
+    subject,
+    htmlbody: html,
+  };
 
-    const mailOptions = {
-        from:"shotlin085@gmail.com",
-        to: to,
-        subject: subject,
-        html: html
-    };
-
-    try {
-        const result = await transporter.sendMail(mailOptions);
-        console.log(result);
-        return result.messageId;
-    } catch (error) {
-        return error;
-    }
-
+  try {
+    const response = await client.sendMail(emailData);
+    console.log("Email sent successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    throw error;
+  }
 };
 
-export default mailsend;
+export default sendMail;

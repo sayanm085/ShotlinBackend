@@ -15,12 +15,11 @@ const PORT = process.env.PORT || 5000;
  const RAZORPAY_KEY_ID= process.env.RAZORPAY_KEY_ID;
  const RAZORPAY_KEY_SECRET= process.env.RAZORPAY_KEY_SECRET;
 
- //Nodemail Configuration for email sending
-const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
-const SMTP_USERNAME = process.env.SMTP_USERNAME;
+ //Zoho ZeptoMail Configuration for email sending
 const EMAIL_FROM = process.env.EMAIL_FROM;
-const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = process.env.SMTP_PORT;
+const EMAIL_FROM_NAME  = process.env.EMAIL_FROM_NAME ;
+const ZEPTOMAIL_URL  = process.env.ZEPTOMAIL_URL;
+const ZEPTOMAIL_TOKEN  = process.env.ZEPTOMAIL_TOKEN 
 // Zoom API Configuration
 const ZOOM_ACCOUNT_ID=process.env.ZOOM_ACCOUNT_ID
 const ZOOM_CLIENT_ID=process.env.ZOOM_CLIENT_ID
@@ -48,12 +47,14 @@ export {
   CLOUDINARY_API_SECRET,
   RAZORPAY_KEY_ID,
   RAZORPAY_KEY_SECRET,
-  SMTP_PASSWORD,
-  SMTP_USERNAME,
-  EMAIL_FROM,
-  SMTP_HOST,
-  SMTP_PORT,
 
+  // ZeptoMail Configuration
+  ZEPTOMAIL_URL,
+  ZEPTOMAIL_TOKEN,
+  EMAIL_FROM_NAME,
+  EMAIL_FROM,
+
+  // Zoom API Configuration
   ZOOM_ACCOUNT_ID,
   ZOOM_CLIENT_ID,
   ZOOM_CLIENT_SECRET,

@@ -149,8 +149,18 @@ const createDailySchedule = asyncHandler(async (req, res) => {
     }
   };
   
-const getMeetingSchedule = async (req, res) => {
+const UserExistMeeting = async (req, res) => {
+    let userId = req.user._id;
+    const meetingSchedule = await MeetingSchedule.find({ userId });
+
     
+    if (!meetingSchedule) {
+      return res.status(404).json(new ApiResponse(404, "No meeting schedule found for this user"));
+    }
+    return res.status(200).json(new ApiResponse(200, "Meeting schedule found", meetingSchedule));
+
+
+
 };
 
 
@@ -162,4 +172,4 @@ const createZoomMeetings = asyncHandler(async (req, res) => {
 });
 
 
-export { createMeetingSchedule , createDailySchedule , getMeetingSchedule,getRealtimeDailySchedule,createZoomMeetings  };
+export { createMeetingSchedule , createDailySchedule , UserExistMeeting ,getRealtimeDailySchedule,createZoomMeetings  };
