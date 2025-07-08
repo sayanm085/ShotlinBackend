@@ -7,19 +7,19 @@ import {verifyJWT,verifyAdminJWT} from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/product-upload").post(
-    verifyAdminJWT,
     upload.fields([
     { name: "productImage", maxCount: 20 },
 ]), productUpload);
 
 router.route("/product-update/:id").put(
-    verifyAdminJWT,
+     verifyAdminJWT,
     upload.fields([
     { name: "productImage", maxCount: 20 },
 ]),productUpdate);
 
 router.route("/product-delete/:id").delete(
-    verifyAdminJWT,
+     verifyAdminJWT,
+
     productDelete);
 
 router.route("/product-like/:id").put(verifyJWT,productLike);

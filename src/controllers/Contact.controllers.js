@@ -101,4 +101,80 @@ const createContactUs = asyncHandler(async (req, res) => {
     
   });
 
-  export {createContactUs};
+
+
+
+const getAllContacts = asyncHandler(async (req, res) => {
+  const {
+    page = 1,
+    limit = 10,
+    search = '',
+    status,
+    priority,
+    createdFrom,
+    createdTo,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+    fields,
+  } = req.query;
+
+  // Build query object
+  const query = {};
+
+  // Optimized multi-field search
+  if (search && search.trim() !== '') {
+    const regex = new RegExp(search.trim(), 'i');
+    query.$or = [
+      { name: regex },
+      { email: regex },
+      { phone: regex },
+      { contactuniquenumber: regex },
+    ];
+  }
+
+  if (status) query.status = status;
+  if (priority) query.priority = priority;
+  if (createdFrom || createdTo) {
+    query.createdAt = {};
+    if (createdFrom) query.createdAt.$gte = new Date(createdFrom);
+    if (createdTo) query.createdAt.$lte = new Date(createdTo);
+  }
+
+  // Projection (fields selection)
+  let selectFields = '';
+  if (fields) {
+    selectFields = fields.split(',').map(f => f.trim()).join(' ');
+  }
+
+  // Pagination options
+  const options = {
+    page: Number(page),
+    limit: Number(limit),
+    sort: { [sortBy]: sortOrder === 'asc' ? 1 : -1 },
+    select: selectFields || undefined,
+    lean: true,
+  };
+
+  // Fetch paginated result
+  const result = await Contact.paginate(query, options);
+
+  // Structure meta info
+  const meta = {
+    totalDocs: result.totalDocs,
+    limit: result.limit,
+    totalPages: result.totalPages,
+    page: result.page,
+    pagingCounter: result.pagingCounter,
+    hasPrevPage: result.hasPrevPage,
+    hasNextPage: result.hasNextPage,
+    prevPage: result.prevPage,
+    nextPage: result.nextPage,
+  };
+
+  res.status(200).json(
+    new ApiResponse(200, { contacts: result.docs, meta }, 'Contacts retrieved successfully')
+  );
+});
+
+export default getAllContacts;
+  export {createContactUs, getAllContacts};

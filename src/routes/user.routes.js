@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser,loginUser,logoutUser , refreshAccessToken,profileData ,profileEdit,verifyEmail,resendotp,forgotPassword,currentuser } from "../controllers/User.controllers.js";
+import { registerUser,loginUser,logoutUser , refreshAccessToken,profileData ,profileEdit,verifyEmail,resendotp,forgotPassword,currentuser,getAllUsers } from "../controllers/User.controllers.js";
 import {addrescreate,useralladdress ,updateUserAddress,deleteUserAddress} from "../controllers/Address.controllers.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/multer.middleware.js";
@@ -23,6 +23,10 @@ router.route("/address").post(verifyJWT,addrescreate)
 router.route("/useraddress").get(verifyJWT,useralladdress)
 router.route("/updateaddress/:addressId").put(verifyJWT,updateUserAddress)
 router.route("/deleteaddress/:addressId").delete(verifyJWT,deleteUserAddress)
+
+
+
+router.route("/getalluser").get(getAllUsers)
 
 
 

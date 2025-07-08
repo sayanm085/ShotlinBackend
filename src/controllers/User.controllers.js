@@ -500,4 +500,82 @@ const currentuser = asyncHandler(async (req, res) => {
 
 
 
-export {registerUser,loginUser,logoutUser , refreshAccessToken,profileData,profileEdit, verifyEmail,resendotp,forgotPassword,currentuser };
+
+
+
+
+/**
+ * GET /users
+ * Query params:
+ *   - page: page number (default: 1)
+ *   - limit: items per page (default: 10)
+ *   - search: substring to match fullName|username|email
+ *   - unverified: "true" to filter isVerified === false
+ *   - period: "30d" for last 30 days, "1y" for last 1 year
+ */
+
+
+const getAllUsers = asyncHandler(async (req, res) => {
+  // 1. Parse pagination params
+  const page  = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
+
+  // 2. Build filter object
+  const { search, unverified, period } = req.query;
+  const filter = {};
+
+  // 2a. Text search
+  if (search) {
+    const regex = new RegExp(search.trim(), 'i');
+    filter.$or = [
+      { fullName: { $regex: regex } },
+      { username: { $regex: regex } },
+      { email:    { $regex: regex } }
+    ];
+  }
+
+  // 2b. Unverified users only
+  if (unverified === 'true') {
+    filter.isVerified = false;
+  }
+
+  // 2c. Date range filter
+  if (period === '30d' || period === '1y') {
+    const now = Date.now();
+    const ms = period === '30d'
+      ? 30 * 24 * 60 * 60 * 1000
+      : 365 * 24 * 60 * 60 * 1000;
+    filter.createdAt = { $gte: new Date(now - ms) };
+  }
+
+  // 3. Paginate + select only needed fields
+  const options = {
+    page,
+    limit,
+    sort: { createdAt: -1 },
+    select: 'username fullName email avatar isVerified createdAt',
+    lean: true,
+  };
+
+  const result = await User.paginate(filter, options);
+
+  if (!result.docs.length) {
+    return res
+      .status(404)
+      .json(ApiResponse(404, null, 'No users found', false));
+  }
+
+  // 4. Respond with paginated structure
+  res.status(200).json(ApiResponse(200, {
+    totalDocs:   result.totalDocs,
+    totalPages:  result.totalPages,
+    currentPage: result.page,
+    hasNextPage: result.hasNextPage,
+    hasPrevPage: result.hasPrevPage,
+    users:       result.docs,
+  }, 'Users fetched successfully', true));
+});
+
+
+
+export {registerUser,loginUser,logoutUser , refreshAccessToken,profileData,profileEdit, verifyEmail,resendotp,forgotPassword,currentuser ,getAllUsers};

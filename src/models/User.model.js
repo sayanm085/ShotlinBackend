@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import redisClient from "../db/Radis.db.js";
+import mongoosePaginate from "mongoose-paginate-v2";
 import {
   REFRESH_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRY,
@@ -155,6 +156,8 @@ userSchema.methods.generateAccessToken= function(){  // Generate Access Token me
         }
     )
 }
+
+userSchema.plugin(mongoosePaginate); // Add pagination plugin to the schema
 
 let User= mongoose.model("User", userSchema);
 

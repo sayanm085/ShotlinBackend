@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from "mongoose-paginate-v2";
+
 
 const MeetingScheduleSchema = new mongoose.Schema(
   {
@@ -49,6 +51,9 @@ const MeetingScheduleSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+// Adding pagination plugin
+MeetingScheduleSchema.plugin(mongoosePaginate);
+
 
 const MeetingSchedule = mongoose.model('MeetingSchedule', MeetingScheduleSchema);
 

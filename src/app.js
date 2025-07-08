@@ -8,7 +8,7 @@ let app = express();
 
 // Enable CORS for all requests (for testing purposes) - ✅ Fix CORS policy
 app.use(cors({
-    origin: ['http://localhost:5173', "https://shotlin.in", "https://shotlin.com","http://shotlin.com","https://www.shotlin.com","http://www.shotlin.com","http://128.199.102.244"], 
+    origin: ['http://localhost:5173',"http://localhost:5174", "https://shotlin.in", "https://shotlin.com","http://shotlin.com","https://www.shotlin.com","http://www.shotlin.com","http://128.199.102.244","http://localhost:4173" ], 
     credentials: true, // ✅ Allow cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ Fix methods property
     allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Fix "Authorization " (extra space removed)

@@ -42,7 +42,7 @@ router.route("/productShowcaseimg").post(
 
 // Update Hero Content
 router.route("/updateHeroContent").put(
-  verifyAdminJWT,
+   verifyAdminJWT,
   upload.fields([
     { name: "heroImage", maxCount: 1 },
   ]),
@@ -51,7 +51,7 @@ router.route("/updateHeroContent").put(
 
 // Update Brand Partners Content
 router.route("/updateBrandPartnersContent").put(
-  verifyAdminJWT,
+   verifyAdminJWT,
   upload.fields([
     { name: "brandLogo", maxCount: 10 },
   ]),
@@ -59,11 +59,11 @@ router.route("/updateBrandPartnersContent").put(
 );
 
 // Update Services Content
-router.route("/updateServicesContent").put(verifyAdminJWT,updateServicesContent);
+router.route("/updateServicesContent").put( verifyAdminJWT,updateServicesContent);
 
 // Update Why Choose Us Content
 router.route("/updateWhyChooseUsContent").put(
-  verifyAdminJWT,
+   verifyAdminJWT,
   upload.fields([
     { name: "WhyChooseUsLogo", maxCount: 20 },
   ]),
@@ -74,7 +74,7 @@ router.route("/updateWhyChooseUsContent").put(
 router.route("/updateCallBookingContent").put(verifyAdminJWT,updateCallBookingContent);
 
 // Update FAQs Content
-router.route("/updateFAQsContent").put(verifyAdminJWT,updateFAQsContent);
+router.route("/updateFAQsContent").put( verifyAdminJWT,updateFAQsContent);
 
 
 

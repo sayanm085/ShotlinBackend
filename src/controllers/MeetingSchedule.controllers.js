@@ -172,4 +172,42 @@ const createZoomMeetings = asyncHandler(async (req, res) => {
 });
 
 
-export { createMeetingSchedule , createDailySchedule , UserExistMeeting ,getRealtimeDailySchedule,createZoomMeetings  };
+const getAllMeetingSchedule = asyncHandler(async (req, res) => {
+  const { type, userId, serviceName, cursor, limit = 10 } = req.query;
+  if (!['upcoming','past'].includes(type)) {
+    return res.status(400).json(new ApiResponse(400, null, "`type` must be 'upcoming' or 'past'", false));
+  }
+
+  const now = new Date();
+  const filter = { meetingDate: type==='upcoming' ? { $gte: now } : { $lt: now } };
+  if (userId) filter.userId = userId;
+  if (serviceName) filter.serviceName = { $regex: new RegExp(serviceName,'i') };
+
+  // Cursor is an ISO date string from the last item of previous page
+  if (cursor) {
+    // For upcoming, fetch > cursor; for past, fetch < cursor
+    filter.meetingDate = {
+      ...(filter.meetingDate),
+      [ type==='upcoming' ? '$gt' : '$lt' ]: new Date(cursor)
+    };
+  }
+
+  const docs = await MeetingSchedule.find(filter)
+    .select('userId meetingLink serviceName meetingDate meetingTime description')
+    .sort({ meetingDate: type==='upcoming' ? 1 : -1 })
+    .limit(parseInt(limit,10) + 1)   // fetch one extra to know if there's more
+    .lean();
+
+  const hasMore = docs.length > limit;
+  const results = hasMore ? docs.slice(0, -1) : docs;
+  const nextCursor = hasMore ? results[results.length-1].meetingDate.toISOString() : null;
+
+  res.status(200).json(new ApiResponse(200, {
+    meetings:  results,
+    nextCursor,
+    hasMore
+  }, 'Meetings fetched successfully', true));
+});
+
+
+export { createMeetingSchedule , createDailySchedule , UserExistMeeting ,getRealtimeDailySchedule,createZoomMeetings,getAllMeetingSchedule  };
