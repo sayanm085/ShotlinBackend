@@ -1,0 +1,43 @@
+{
+  "client": "687557c899d9b6032e73077a",
+  "location": {
+    "placeOfSupply": "Karnataka",
+    "countryOfSupply": "India"
+  },
+  "expectedDeliveryDate": "2025-08-14T00:00:00.000Z",
+  "issueDate": "2025-07-14T19:49:44.000Z",
+  "sellerDetails": {
+    "name": "Sayan Mondal",
+    "companyName": "Shotlin",
+    "address": "379/N, BANIPUR PALPARA WARD 13 BANIPUR PALPARA S.N. DEY ROAD North 24 Parganas, West Bengal 743287, India",
+    "gstNumber": "AAHATPM4170HDC",
+    "placeOfOrigin": "West Bengal",
+    "phone": "+91 9876543210",
+    "email": "contact@shotlin.com",
+    "website": "https://shotlin.com"
+  },
+  "services": [
+    {
+      "name": "Premium Consulting Services",
+      "description": "Strategic technology consulting for enterprise clients",
+      "quantity": 10,
+      "unitPrice": 20000,
+      "hsnSacCode": "998313"
+    },
+    {
+      "name": "Custom Software Development",
+      "description": "Tailored software solutions for business needs",
+      "quantity": 5,
+      "unitPrice": 30000,
+      "hsnSacCode": "998315"
+    }
+  ],
+  "projectDetails": {
+    "name": "TechNova Strategic Consulting",
+    "description": "Strategic technology advisory services for digital transformation"
+  },
+  "summary": {
+    "currency": "INR"
+  },
+  "status": "draft"
+}

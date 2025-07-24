@@ -76,6 +76,8 @@ import WebContent from './routes/webContent.routes.js';
 import product  from './routes/product.routes.js';
 import Contact from './routes/contact.routes.js';
 import admin from './routes/admin.routes.js';
+import invoice from './routes/Invoice.routes.js';
+import discount from './routes/Discount.routes.js';
 
 
 //Routes Definition
@@ -83,6 +85,8 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/content', WebContent);
 app.use('/api/v1/products', product);
 app.use('/api/v1/contact', Contact);
+app.use('/api/v1/invoice', invoice);
+app.use('/api/v1/discount', discount);
 
 //Admin Routes
 app.use('/api/v1/admin', admin);
