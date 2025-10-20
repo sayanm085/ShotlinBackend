@@ -264,79 +264,80 @@ const loginUser = asyncHandler(async (req, res) => {
   const { varifyby, email, password, userdata } = req.body;
 
   let user;
-  let refreshToken;
-  let accessToken;
 
-  if (varifyby === 'email') {
+  // === 1. Handle Email Login ===
+  if (varifyby === "email") {
     if (!email || !password) {
-      return res.status(400).json(ApiResponse(400, null, "Email and password are required", false));
+      return res.status(400).json({ success: false, message: "Email and password are required" });
     }
 
-    // 🔥 Fetch only necessary fields to reduce DB load
     user = await User.findOne({ email }).select("+password +isVerified +refreshToken");
+    if (!user) return res.status(404).json({ success: false, message: "Invalid email or password" });
+    if (!user.isVerified) return res.status(401).json({ success: false, message: "Email not verified" });
 
-    if (!user) {
-      return res.status(404).json(ApiResponse(404, null, "Invalid email or password", false));
-    }
-
-    if (!user.isVerified) {
-      return res.status(401).json(ApiResponse(401, null, "Email is not verified", false));
-    }
-
-    // 🔥 Faster password verification
-    if (!await user.verifyPassword(password)) {
-      return res.status(401).json(ApiResponse(401, null, "Incorrect password", false));
-    }
-  } 
-  
-  else if (varifyby === 'google.com') {
-    if (!userdata) {
-      return res.status(400).json(ApiResponse(400, null, "Google data is required", false));
-    }
-
-    // 🔥 Verify Google Token & Extract Email
-    const decodedToken = await admin.auth().verifyIdToken(userdata);
-    
-    if (!decodedToken?.email) {
-      return res.status(400).json(ApiResponse(400, null, "Invalid Google token", false));
-    }
-
-
-    // 🔥 Fetch only necessary fields to reduce DB load
-    user = await User.findOne({ email: decodedToken.email }).select("+refreshToken");
-    if (!user) {
-      return res.status(404).json(ApiResponse(404, null, "Account not found", false));
-    }
-
-    
-  } 
-  
-  else {
-    return res.status(400).json(ApiResponse(400, null, "Invalid verification method", false));
+    const isPasswordValid = await user.verifyPassword(password);
+    if (!isPasswordValid) return res.status(401).json({ success: false, message: "Incorrect password" });
   }
 
-  // 🔥 Generate JWT Tokens in parallel
-  [refreshToken, accessToken] = await Promise.all([
-    user.generaterefreshToken(),
-    user.generateAccessToken(),
-  ]);
+  // === 2. Handle Google Login ===
+  else if (varifyby === "google.com") {
+    if (!userdata) return res.status(400).json({ success: false, message: "Google data is required" });
 
-  // 🔥 Set cookies & update user in parallel (non-blocking)
-  setAuthCookies(res, accessToken, refreshToken);
+    const decodedToken = await admin.auth().verifyIdToken(userdata);
+    if (!decodedToken?.email) return res.status(400).json({ success: false, message: "Invalid Google token" });
+
+    user = await User.findOne({ email: decodedToken.email }).select("+refreshToken");
+    if (!user) return res.status(404).json({ success: false, message: "Account not found" });
+  }
+
+  // === 3. Invalid verification method ===
+  else {
+    return res.status(400).json({ success: false, message: "Invalid verification method" });
+  }
+
+  // === 4. Generate Tokens ===
+  const accessToken = await user.generateAccessToken();
+  const refreshToken = await user.generaterefreshToken();
+
+  // Save refresh token to DB
   user.refreshToken = refreshToken;
   user.updatedAt = Date.now();
-  user.save({ validateBeforeSave: false }).catch(console.error); // Non-blocking save
+  await user.save({ validateBeforeSave: false });
 
-  // Prepare response
+  // === 5. Set cookies (for web) ===
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+  });
+
+  // === 6. Return JSON (for mobile apps) ===
   const userResponse = {
     username: user.username,
-    avatar: user.avatar,
     email: user.email,
     fullName: user.fullName,
+    avatar: user.avatar,
   };
-
-  res.status(200).json(ApiResponse(200, userResponse, "User logged in successfully", true));
+console.log("✅ User logged in successfully mobile and web");
+  res.status(200).json({
+    success: true,
+    message: "User logged in successfully mobile and web",
+    data: {
+      user: userResponse,
+      accessToken,
+      refreshToken,
+    },
+  });
 });
+
 
 
 
@@ -349,6 +350,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.updateOne({ _id: userId }, { $unset: { refreshToken: 1 } });
 
   // 🚀 Clear cookies efficiently
+  console.log("✅ User logged out successfully");
   res
     .status(200)
     .clearCookie("AccessToken", { httpOnly: true, secure: true })
