@@ -24,9 +24,14 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh shotlin@128.199.102.244 << 'EOF'
+          ssh -o StrictHostKeyChecking=no shotlin@128.199.102.244 << 'EOF'
             cd /home/shotlin/ShotlinBackend
-            git pull origin main
-            npm install
-            pm2 restart 0
+            echo "🧹 Resetting local changes..."
+            git fetch origin main
+            git reset --hard origin/main
+            echo "📦 Installing dependencies..."
+            npm install --production
+            echo "🚀 Restarting app..."
+            pm2 restart 0 || pm2 start src/index.js --name index
+            echo "✅ Deployment complete."
           EOF

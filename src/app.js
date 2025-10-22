@@ -23,7 +23,7 @@ app.use(cookieParser())
 
 app.get('/', (req, res) => {
 
-res.json({message: "Welcome to the API or CL/CD testing done by Shotlin mobile app team!1"});
+res.json({message: "Welcome to the API or CL/CD testing done by Shotlin mobile app team!"});
 
 });
 
