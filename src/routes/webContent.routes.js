@@ -35,11 +35,6 @@ router.route("/productShowcaseimg").post(
   productShowcaseimg
 );
 
-
-
-
-
-
 // Update Hero Content
 router.route("/updateHeroContent").put(
    verifyAdminJWT,
@@ -72,12 +67,8 @@ router.route("/updateWhyChooseUsContent").put(
 
 // Update Call Booking Content
 router.route("/updateCallBookingContent").put(verifyAdminJWT,updateCallBookingContent);
-
 // Update FAQs Content
 router.route("/updateFAQsContent").put( verifyAdminJWT,updateFAQsContent);
-
-
-
 router.route("/webcontent-create").post(verifyAdminJWT,WebContentcreate);
 router.route("/webcontent-get").get(WebContentget);
 
