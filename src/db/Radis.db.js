@@ -10,12 +10,19 @@ import {
 } from "../constants.js";
 
 
+// const redisClient = redis.createClient({
+//   password: REDIS_PASSWORD,
+
+// });
+
 const redisClient = redis.createClient({
+  socket: {
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+  },
+  username: REDIS_USERNAME,
   password: REDIS_PASSWORD,
-
 });
-
-// const redisClient = redis.createClient({});
 
 
 redisClient.on("error", (err) => console.error("Redis Error:", err));
