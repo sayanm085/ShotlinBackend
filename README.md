@@ -14,25 +14,38 @@
 ## Table of Contents
 
 1. [About the Project](#about-the-project)
-2. [Tech Stack](#tech-stack)
-3. [Features](#features)
-4. [API Overview](#api-overview)
-5. [Prerequisites](#prerequisites)
-6. [Local Development Setup](#local-development-setup)
-7. [Environment Variables](#environment-variables)
-8. [Deployment Guide](#deployment-guide)
+2. [Related Repositories](#related-repositories)
+3. [Tech Stack](#tech-stack)
+4. [Features](#features)
+5. [API Overview](#api-overview)
+6. [Prerequisites](#prerequisites)
+7. [Local Development Setup](#local-development-setup)
+8. [Environment Variables](#environment-variables)
+9. [Deployment Guide](#deployment-guide)
    - [Deploy on a VPS / Linux Server (PM2)](#deploy-on-a-vps--linux-server-pm2)
    - [Deploy with Docker](#deploy-with-docker)
    - [Deploy on Railway / Render / Fly.io](#deploy-on-railway--render--flyio)
-9. [Contributing](#contributing)
-10. [License](#license)
-11. [Contact](#contact)
+10. [Contributing](#contributing)
+11. [License](#license)
+12. [Contact](#contact)
 
 ---
 
 ## About the Project
 
 ShotlinBackend is the **RESTful API server** for the Shotlin platform. It handles user authentication, product/service listings, booking & scheduling, invoicing, discount management, and admin operations. The project is open-source under the **Apache 2.0** license, so you are free to fork, self-host, and adapt it for your own use.
+
+---
+
+## Related Repositories
+
+The Shotlin platform is composed of three separate repositories that work together:
+
+| Repository | Description |
+|---|---|
+| **[ShotlinBackend](https://github.com/sayanm085/ShotlinBackend)** *(this repo)* | RESTful API server — handles auth, bookings, invoicing, payments, and all business logic |
+| **[ShotlinAdmin](https://github.com/sayanm085/ShotlinAdmin)** | Admin dashboard — a web interface for administrators to manage services, bookings, users, discounts, and content |
+| **[shotlin-web](https://github.com/sayanm085/shotlin-web)** | User-facing frontend — the client-side web application where users browse services, make bookings, and manage their accounts |
 
 ---
 
